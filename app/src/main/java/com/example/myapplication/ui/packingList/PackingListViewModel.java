@@ -10,7 +10,7 @@ public class PackingListViewModel extends ViewModel {
 
     public PackingListViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is packing fragment");
+        mText.setValue("This is packing list fragment");
     }
 
     public LiveData<String> getText() {
