@@ -52,4 +52,7 @@ dependencies {
 
     //firebase Authentication:
     implementation (libs.firebase.ui.auth)
+
+    //Lottie
+    implementation(libs.lottie)
 }

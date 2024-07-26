@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void transactToMainActivity() {
-        Intent i = new Intent(this,MainActivity.class);
+        Intent i = new Intent(this,LottieSplashActivity.class);
         startActivity(i);
         finish();
     }
