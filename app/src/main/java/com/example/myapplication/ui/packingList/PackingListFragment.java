@@ -8,12 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentPackingBinding;
 
 import java.util.ArrayList;
@@ -32,14 +32,17 @@ public class PackingListFragment extends Fragment {
         binding = FragmentPackingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Initialize packing list and adapter
         packingList = new ArrayList<>();
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, packingList);
         ListView listView = binding.packingList;
         listView.setAdapter(adapter);
 
+        // Set up EditText and Button
         EditText editText = binding.packingEditText;
         Button addButton = binding.buttonAddPacking;
 
+        // Add button onClickListener
         addButton.setOnClickListener(v -> {
             String item = editText.getText().toString();
             if (!item.isEmpty()) {
@@ -47,6 +50,15 @@ public class PackingListFragment extends Fragment {
                 adapter.notifyDataSetChanged();
                 editText.setText("");
             }
+        });
+
+        // Set up ListView item long click listener for deleting an item
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            String item = packingList.get(position);
+            packingList.remove(position);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(getContext(), item + " deleted", Toast.LENGTH_SHORT).show();
+            return true;
         });
 
         return root;
