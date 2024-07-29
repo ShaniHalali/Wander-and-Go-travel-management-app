@@ -10,7 +10,7 @@ public class TripPlannerViewModel extends ViewModel {
 
     public TripPlannerViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is Trip Planner fragment");
+      //  mText.setValue("This is Trip Planner fragment");
     }
 
     public LiveData<String> getText() {

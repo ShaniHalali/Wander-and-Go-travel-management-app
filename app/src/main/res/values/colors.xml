@@ -11,4 +11,6 @@
     <color name="pink_100">#F8BBD0</color>
     <color name="light_blue_50">#E3F2FD</color>
     <color name="blue_100">#BBDEFB</color>
+    <color name="blue_sky2">#84FFFF</color>
+    <color name="blue_sky">#E5FFFF</color>
 </resources>

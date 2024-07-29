@@ -53,6 +53,9 @@ dependencies {
     //firebase Authentication:
     implementation (libs.firebase.ui.auth)
 
+    //Database
+    implementation(libs.firebase.database)
+
     //Lottie
     implementation(libs.lottie)
 }

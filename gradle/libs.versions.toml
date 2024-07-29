@@ -32,6 +32,7 @@ navigation-fragment = { group = "androidx.navigation", name = "navigation-fragme
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 lottie={module = "com.airbnb.android:lottie" , version.ref = "lottie"}
+firebase-database = { module = "com.google.firebase:firebase-database" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
