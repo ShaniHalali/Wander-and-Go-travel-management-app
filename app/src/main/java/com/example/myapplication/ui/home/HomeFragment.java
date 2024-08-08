@@ -16,34 +16,39 @@ import com.example.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TripAdapter tripAdapter;
-    private List<String> tripList; // השתמש במודל Trip האמיתי שלך
+    private List<String> tripList;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Initialize RecyclerView and adapter
-        recyclerView = root.findViewById(R.id.list_LST_trips); // ווידא ש-ID זה תואם ל-XML
+        recyclerView = root.findViewById(R.id.list_LST_trips);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         tripList = new ArrayList<>();
         tripAdapter = new TripAdapter(tripList, position -> {
             // Handle the long click event
-            tripList.remove(position);
-            tripAdapter.notifyItemRemoved(position);
-            Toast.makeText(getContext(), "Trip removed", Toast.LENGTH_SHORT).show();
+            if (position >= 0 && position < tripList.size()) {
+                tripList.remove(position);
+                tripAdapter.notifyItemRemoved(position);
+                // Notify the adapter about changes
+                tripAdapter.notifyItemRangeChanged(position, tripList.size());
+                Toast.makeText(getContext(), "Trip removed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Invalid position", Toast.LENGTH_SHORT).show();
+            }
         });
         recyclerView.setAdapter(tripAdapter);
 
         // Button to add new trip
-        com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner); // ווידא ש-ID זה תואם ל-XML
+        com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner);
         addButton.setOnClickListener(v -> {
-            // Add logic to add new trip to the list
             addNewTrip("New Trip");
             Toast.makeText(getContext(), "New trip added", Toast.LENGTH_SHORT).show();
         });

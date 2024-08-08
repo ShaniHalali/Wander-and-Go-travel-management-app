@@ -11,7 +11,7 @@
         android:id="@+id/list_LST_trips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/horizontal_player_item"/>
+        tools:listitem="@layout/horizontal_trips_item" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/list_BTN_planner"
@@ -22,6 +22,6 @@
         android:backgroundTint="@color/blue_sky"
         app:icon="@drawable/add_circle_outline"
         app:iconSize="50dp"
-        android:contentDescription="@string/location_button_description"/>
+        android:contentDescription="@string/location_button_description" />
 
 </RelativeLayout>
