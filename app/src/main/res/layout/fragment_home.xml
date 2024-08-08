@@ -19,8 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/blue_sky2"
-        app:icon="@drawable/travel_explore"
+        android:backgroundTint="@color/blue_sky"
+        app:icon="@drawable/add_circle_outline"
+        app:iconSize="50dp"
         android:contentDescription="@string/location_button_description"/>
 
 </RelativeLayout>

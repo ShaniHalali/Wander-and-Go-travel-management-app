@@ -29,7 +29,7 @@
                 android:src="@drawable/app_logo"
                 android:scaleType="center" />
 
-            <!-- Foreground ImageView (Player Image) -->
+            <!-- Foreground ImageView (trip Image) -->
             <ImageView
                 android:id="@+id/player_IMG_poster"
                 android:layout_width="match_parent"
@@ -77,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:layout_marginStart="230dp"
+                android:layout_marginStart="250dp"
                 android:scaleType="fitCenter"
                 android:backgroundTint="@color/pink_400"
                 app:icon="@drawable/travel_explore"

@@ -21,18 +21,23 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TripAdapter tripAdapter;
-    private List<String> tripList; // i need to use the real data base
+    private List<String> tripList; // השתמש במודל Trip האמיתי שלך
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Initialize RecyclerView and adapter
-        recyclerView = root.findViewById(R.id.list_LST_trips);
+        recyclerView = root.findViewById(R.id.list_LST_trips); // ווידא ש-ID זה תואם ל-XML
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         tripList = new ArrayList<>();
-        tripAdapter = new TripAdapter(tripList);
+        tripAdapter = new TripAdapter(tripList, position -> {
+            // Handle the long click event
+            tripList.remove(position);
+            tripAdapter.notifyItemRemoved(position);
+            Toast.makeText(getContext(), "Trip removed", Toast.LENGTH_SHORT).show();
+        });
         recyclerView.setAdapter(tripAdapter);
 
         // Button to add new trip

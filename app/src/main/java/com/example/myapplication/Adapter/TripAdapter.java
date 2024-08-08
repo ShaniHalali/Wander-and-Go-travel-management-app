@@ -4,17 +4,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.myapplication.R;
+
 import java.util.List;
 
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder> {
 
     private List<String> tripList; // Use your actual Trip model instead of String
+    private OnItemLongClickListener onItemLongClickListener;
 
-    public TripAdapter(List<String> tripList) {
+    public TripAdapter(List<String> tripList, OnItemLongClickListener onItemLongClickListener) {
         this.tripList = tripList;
+        this.onItemLongClickListener = onItemLongClickListener;
     }
 
     @NonNull
@@ -29,7 +35,15 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
         String trip = tripList.get(position);
         holder.tripName.setText(trip);
-        // Bind other data to your views here
+
+        // Handle long click
+        holder.itemView.setOnLongClickListener(v -> {
+            if (onItemLongClickListener != null) {
+                onItemLongClickListener.onItemLongClick(position);
+                return true; // Return true to indicate that the long click has been handled
+            }
+            return false;
+        });
     }
 
     @Override
@@ -46,5 +60,8 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
             tripName = itemView.findViewById(R.id.trips_LBL_name); // Adjust to match your item layout
         }
     }
-}
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+}
