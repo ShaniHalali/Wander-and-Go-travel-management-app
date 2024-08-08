@@ -11,4 +11,8 @@
     <string name="menu_packing">Packing List</string>
     <string name="menu_trip_planner">Trip Planner</string>
     <string name="default_user_name">User</string>
+
+    <string name="location_button_description">Location Button</string>
+    <string name="location_button_text">Locate</string>
+
 </resources>

@@ -4,34 +4,50 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.databinding.FragmentHomeBinding;
+import com.example.myapplication.Adapter.TripAdapter;
+import com.example.myapplication.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private RecyclerView recyclerView;
+    private TripAdapter tripAdapter;
+    private List<String> tripList; // i need to use the real data base
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        // Initialize RecyclerView and adapter
+        recyclerView = root.findViewById(R.id.list_LST_trips);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        tripList = new ArrayList<>();
+        tripAdapter = new TripAdapter(tripList);
+        recyclerView.setAdapter(tripAdapter);
+
+        // Button to add new trip
+        com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner); // ווידא ש-ID זה תואם ל-XML
+        addButton.setOnClickListener(v -> {
+            // Add logic to add new trip to the list
+            addNewTrip("New Trip");
+            Toast.makeText(getContext(), "New trip added", Toast.LENGTH_SHORT).show();
+        });
+
         return root;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    private void addNewTrip(String tripName) {
+        tripList.add(tripName);
+        tripAdapter.notifyItemInserted(tripList.size() - 1);
     }
 }
