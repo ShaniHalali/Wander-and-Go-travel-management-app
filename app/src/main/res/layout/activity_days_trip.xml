@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/light_blue_50"
+    tools:context=".DaysTripActivity"
+    >
+
+    <!-- Header for Trip Title -->
+    <TextView
+        android:id="@+id/tripTitleHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Let’s Take Off To..."
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"/>
+
+    <!-- Trip Title Input -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tripTitleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_below="@id/tripTitleHeader"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/trip_Title_Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter trip destination"
+            android:background="@color/white"
+            android:textSize="15sp"
+            android:textColorHint="@color/black"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Days Header -->
+    <TextView
+        android:id="@+id/daysHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Days"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_below="@id/tripTitleLayout"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="40dp"/>
+
+    <!-- RecyclerView for Days -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trip_LST_days"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/daysHeader"
+        android:layout_above="@id/addDayButton"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        tools:listitem="@layout/horizontal_days_item"/>
+
+    <!-- Add Day Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addDayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Day"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:backgroundTint="@color/pink_400"
+        app:cornerRadius="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="125dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"/>
+
+</RelativeLayout>
