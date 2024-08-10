@@ -21,13 +21,6 @@
             android:name=".ui.ui.TripScheduleActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Schedule2Activity"
-            android:exported="false"
-            android:label="@string/title_activity_schedule2" />
-        <activity
-            android:name=".ui.ScheduleActivity"
-            android:exported="false" />
-        <activity
             android:name=".LottieSplashActivity"
             android:exported="false" />
         <activity

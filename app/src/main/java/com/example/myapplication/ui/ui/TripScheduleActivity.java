@@ -19,12 +19,13 @@ public class TripScheduleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_schedule);
 
-        // קבלת שם היום שהועבר דרך ה-Intent
+        // Get the day name from the intent
         Intent intent = getIntent();
         String dayName = intent.getStringExtra("DAY_NAME");
 
-        // שימוש בשם היום לצורך הצגה ב-TextView
-        TextView tvDay = findViewById(R.id.tv_day); // נניח שה-TextView שלך נקרא tv_day
+
+        // Use the day name to update the TextView
+        TextView tvDay = findViewById(R.id.tv_day); // Make sure this ID matches your layout
         if (dayName != null) {
             tvDay.setText(dayName);
         }

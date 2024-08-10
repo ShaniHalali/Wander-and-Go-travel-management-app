@@ -41,8 +41,9 @@ public class DaysTripActivity extends AppCompatActivity {
         }, day -> {
             // Handle schedule button click event
             Intent scheduleIntent = new Intent(DaysTripActivity.this, TripScheduleActivity.class);
-            scheduleIntent.putExtra("trip_name", day); // Pass the selected day name
+            scheduleIntent.putExtra("DAY_NAME", day); // Ensure "DAY_NAME" is the same key used in TripScheduleActivity
             startActivity(scheduleIntent);
+
         });
 
         RecyclerView recyclerView = findViewById(R.id.trip_LST_days);
