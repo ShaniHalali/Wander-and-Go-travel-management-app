@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Adapter.DayAdapter;
+import com.example.myapplication.ui.ui.TripScheduleActivity;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -34,12 +35,14 @@ public class DaysTripActivity extends AppCompatActivity {
 
         // Initialize RecyclerView and Adapter
         daysList = new ArrayList<>(); // Initialize with any existing data if needed
-        dayAdapter = new DayAdapter(daysList, position -> {
+        dayAdapter = new DayAdapter(this, daysList, position -> {
             // Handle long click to remove item
             dayAdapter.removeItem(position);
-        }, position -> {
+        }, day -> {
             // Handle schedule button click event
-            Toast.makeText(DaysTripActivity.this, "Schedule clicked for day at position " + position, Toast.LENGTH_SHORT).show();
+            Intent scheduleIntent = new Intent(DaysTripActivity.this, TripScheduleActivity.class);
+            scheduleIntent.putExtra("trip_name", day); // Pass the selected day name
+            startActivity(scheduleIntent);
         });
 
         RecyclerView recyclerView = findViewById(R.id.trip_LST_days);
@@ -53,10 +56,8 @@ public class DaysTripActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //return super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.top_app_bar,menu);
         return true;
-
     }
 
     @Override
@@ -64,7 +65,6 @@ public class DaysTripActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.item_done){
             message("Done");
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -73,14 +73,14 @@ public class DaysTripActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-
     private void addNewDay() {
         // Generate a new day item, here it's just a placeholder
-        String newDay = "Day " + (dayNumber());
+        String newDay = "Day " + dayNumber();
         daysList.add(newDay);
         dayAdapter.notifyItemInserted(daysList.size() - 1); // Notify adapter of the new item
     }
-    private int dayNumber(){
+
+    private int dayNumber() {
         return currentDay++;
     }
 }

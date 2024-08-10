@@ -1,5 +1,7 @@
 package com.example.myapplication.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.ui.ui.TripScheduleActivity;
 
 import java.util.List;
 
@@ -17,8 +20,10 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     private List<String> daysList;
     private OnItemLongClickListener onItemLongClickListener;
     private OnScheduleClickListener onScheduleClickListener;
+    private Context context;
 
-    public DayAdapter(List<String> daysList, OnItemLongClickListener onItemLongClickListener, OnScheduleClickListener onScheduleClickListener) {
+    public DayAdapter(Context context, List<String> daysList, OnItemLongClickListener onItemLongClickListener, OnScheduleClickListener onScheduleClickListener) {
+        this.context = context;
         this.daysList = daysList;
         this.onItemLongClickListener = onItemLongClickListener;
         this.onScheduleClickListener = onScheduleClickListener;
@@ -49,7 +54,10 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
         // Handle schedule button click
         holder.dayScheduleButton.setOnClickListener(v -> {
             if (onScheduleClickListener != null) {
-                onScheduleClickListener.onScheduleClick(position);
+                // Create Intent to start TripScheduleActivity
+                Intent intent = new Intent(context, TripScheduleActivity.class);
+                intent.putExtra("trip_name", day); // Pass the selected day name
+                context.startActivity(intent);
             }
         });
     }
@@ -84,6 +92,6 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     }
 
     public interface OnScheduleClickListener {
-        void onScheduleClick(int position);
+        void onScheduleClick(String dayName); // Change this method to pass the day name
     }
 }
