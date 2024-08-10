@@ -12,32 +12,32 @@ import com.example.myapplication.R;
 
 import java.util.List;
 
-public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder> {
+public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
 
-    private List<String> tripList;
+    private List<String> daysList;
     private OnItemLongClickListener onItemLongClickListener;
     private OnScheduleClickListener onScheduleClickListener;
 
-    public TripAdapter(List<String> tripList, OnItemLongClickListener onItemLongClickListener, OnScheduleClickListener onScheduleClickListener) {
-        this.tripList = tripList;
+    public DayAdapter(List<String> daysList, OnItemLongClickListener onItemLongClickListener, OnScheduleClickListener onScheduleClickListener) {
+        this.daysList = daysList;
         this.onItemLongClickListener = onItemLongClickListener;
         this.onScheduleClickListener = onScheduleClickListener;
     }
 
     @NonNull
     @Override
-    public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.horizontal_trips_item, parent, false);
-        return new TripViewHolder(view);
+                .inflate(R.layout.horizontal_days_item, parent, false);
+        return new DayViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
-        String trip = tripList.get(position);
-        holder.dayName.setText(trip);
+    public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
+        String day = daysList.get(position);
+        holder.dayName.setText(day);
 
-        // Handle long click
+        // Handle long click to remove item
         holder.itemView.setOnLongClickListener(v -> {
             if (onItemLongClickListener != null) {
                 onItemLongClickListener.onItemLongClick(position);
@@ -47,7 +47,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         });
 
         // Handle schedule button click
-        holder.scheduleButton.setOnClickListener(v -> {
+        holder.dayScheduleButton.setOnClickListener(v -> {
             if (onScheduleClickListener != null) {
                 onScheduleClickListener.onScheduleClick(position);
             }
@@ -56,26 +56,26 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
     @Override
     public int getItemCount() {
-        return tripList.size();
+        return daysList.size();
     }
 
     public void removeItem(int position) {
-        if (position >= 0 && position < tripList.size()) {
-            tripList.remove(position);
+        if (position >= 0 && position < daysList.size()) {
+            daysList.remove(position);
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position, tripList.size());
+            notifyItemRangeChanged(position, daysList.size()); // Update item positions
         }
     }
 
-    static class TripViewHolder extends RecyclerView.ViewHolder {
+    static class DayViewHolder extends RecyclerView.ViewHolder {
 
         TextView dayName;
-        com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton scheduleButton;
+        com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton dayScheduleButton;
 
-        TripViewHolder(View itemView) {
+        DayViewHolder(View itemView) {
             super(itemView);
-            dayName = itemView.findViewById(R.id.trips_LBL_name);
-            scheduleButton = itemView.findViewById(R.id.list_BTN_scedule);
+            dayName = itemView.findViewById(R.id.day_LBL_name);
+            dayScheduleButton = itemView.findViewById(R.id.day_BTN_dayEdit);
         }
     }
 

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Adapter.TripAdapter;
+import com.example.myapplication.DaysTripActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.ui.ui.TripScheduleActivity;
 
@@ -51,7 +52,7 @@ public class HomeFragment extends Fragment {
                 },
                 position -> {
                     // Handle the schedule button click
-                    Intent intent = new Intent(getContext(), TripScheduleActivity.class);
+                    Intent intent = new Intent(getContext(), DaysTripActivity.class);
                     Toast.makeText(getContext(), "Schedule Activity", Toast.LENGTH_SHORT).show();
                     intent.putExtra("trip_name", tripList.get(position)); // Pass the trip name to the new activity
                     startActivity(intent);
