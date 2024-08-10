@@ -16,10 +16,12 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
     private List<String> tripList;
     private OnItemLongClickListener onItemLongClickListener;
+    private OnScheduleClickListener onScheduleClickListener;
 
-    public TripAdapter(List<String> tripList, OnItemLongClickListener onItemLongClickListener) {
+    public TripAdapter(List<String> tripList, OnItemLongClickListener onItemLongClickListener, OnScheduleClickListener onScheduleClickListener) {
         this.tripList = tripList;
         this.onItemLongClickListener = onItemLongClickListener;
+        this.onScheduleClickListener = onScheduleClickListener;
     }
 
     @NonNull
@@ -43,6 +45,13 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
             }
             return false;
         });
+
+        // Handle schedule button click
+        holder.scheduleButton.setOnClickListener(v -> {
+            if (onScheduleClickListener != null) {
+                onScheduleClickListener.onScheduleClick(position);
+            }
+        });
     }
 
     @Override
@@ -61,14 +70,20 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     static class TripViewHolder extends RecyclerView.ViewHolder {
 
         TextView tripName;
+        com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton scheduleButton;
 
         TripViewHolder(View itemView) {
             super(itemView);
             tripName = itemView.findViewById(R.id.trips_LBL_name);
+            scheduleButton = itemView.findViewById(R.id.list_BTN_scedule);
         }
     }
 
     public interface OnItemLongClickListener {
         void onItemLongClick(int position);
+    }
+
+    public interface OnScheduleClickListener {
+        void onScheduleClick(int position);
     }
 }
