@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.Adapter.DayAdapter;
 import com.example.myapplication.ui.ui.DailyScheduleActivity;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,10 @@ public class TripPlansActivity extends AppCompatActivity {
     private DayAdapter dayAdapter;
     private List<String> daysList;
     int currentDay=1;
+    private TextInputEditText trip_Title_Input;
+    private RecyclerView trip_LST_days;
+    private ExtendedFloatingActionButton day_BTN_dayEdit;
+    private String tripName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +35,10 @@ public class TripPlansActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip_plans);
 
         // Get the trip name from the intent
-        Intent intent = getIntent();
-        String tripName = intent.getStringExtra("trip_name");
+        tripName = getIntent().getStringExtra("trip_name");
+        findViews();
+        initViews();
+
 
         // Initialize RecyclerView and Adapter
         daysList = new ArrayList<>();
@@ -45,13 +53,23 @@ public class TripPlansActivity extends AppCompatActivity {
 
         });
 
-        RecyclerView recyclerView = findViewById(R.id.trip_LST_days);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // Ensure the LayoutManager is set
-        recyclerView.setAdapter(dayAdapter);
+
+        trip_LST_days.setLayoutManager(new LinearLayoutManager(this)); // Ensure the LayoutManager is set
+        trip_LST_days.setAdapter(dayAdapter);
 
         // Set up Add Day button
         MaterialButton addDayButton = findViewById(R.id.addDayButton);
         addDayButton.setOnClickListener(v -> addNewDay());
+    }
+
+    private void initViews() {
+        trip_Title_Input.setText(tripName);
+    }
+
+    private void findViews() {
+        trip_Title_Input = findViewById(R.id.trip_Title_Input);
+        trip_LST_days = findViewById(R.id.trip_LST_days);
+        day_BTN_dayEdit = findViewById(R.id.day_BTN_dayEdit);
     }
 
     @Override

@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment {
     private List<String> tripList;
     private DatabaseReference myRef;
     private int nextTripNumber = 1; // Counter to track the next unique trip number
+    private String tripName;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,7 +48,7 @@ public class HomeFragment extends Fragment {
                 position -> {
                     // Handle the long click event
                     if (position >= 0 && position < tripList.size()) {
-                        String tripName = tripList.get(position);
+                        tripName = tripList.get(position);
                         tripList.remove(position);
                         tripAdapter.notifyItemRemoved(position);
                         tripAdapter.notifyItemRangeChanged(position, tripList.size());
@@ -66,7 +67,7 @@ public class HomeFragment extends Fragment {
                     // Handle the schedule button click
                     Intent intent = new Intent(getContext(), TripPlansActivity.class);
                     Toast.makeText(getContext(), "Schedule Activity", Toast.LENGTH_SHORT).show();
-                    intent.putExtra("trip_name", tripList.get(position)); // Pass the trip name to the new activity
+                    intent.putExtra("trip_name", tripName); // Pass the trip name to the new activity
                     startActivity(intent);
                 }
         );
