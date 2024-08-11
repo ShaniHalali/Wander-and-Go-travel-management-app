@@ -16,6 +16,11 @@ import com.example.myapplication.ui.ui.DailyScheduleActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +28,12 @@ import java.util.List;
 public class TripPlansActivity extends AppCompatActivity {
     private DayAdapter dayAdapter;
     private List<String> daysList;
-    int currentDay = 1;
+    private int currentDay = 1;
     private TextInputEditText trip_Title_Input;
     private RecyclerView trip_LST_days;
     private ExtendedFloatingActionButton day_BTN_dayEdit;
     private String tripName;
+    private DatabaseReference tripRef; // Reference to the trip's node in Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +55,6 @@ public class TripPlansActivity extends AppCompatActivity {
             Intent scheduleIntent = new Intent(TripPlansActivity.this, DailyScheduleActivity.class);
             scheduleIntent.putExtra("DAY_NAME", day); // Ensure "DAY_NAME" is the same key used in DailyScheduleActivity
             startActivity(scheduleIntent);
-
         });
 
         trip_LST_days.setLayoutManager(new LinearLayoutManager(this)); // Ensure the LayoutManager is set
@@ -58,6 +63,9 @@ public class TripPlansActivity extends AppCompatActivity {
         // Set up Add Day button
         MaterialButton addDayButton = findViewById(R.id.addDayButton);
         addDayButton.setOnClickListener(v -> addNewDay());
+
+        // Fetch days from Firebase
+        fetchDaysFromFirebase();
     }
 
     private void initViews() {
@@ -68,6 +76,28 @@ public class TripPlansActivity extends AppCompatActivity {
         trip_Title_Input = findViewById(R.id.trip_Title_Input);
         trip_LST_days = findViewById(R.id.trip_LST_days);
         day_BTN_dayEdit = findViewById(R.id.day_BTN_dayEdit);
+    }
+
+    private void fetchDaysFromFirebase() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        tripRef = database.getReference("Trips").child(tripName).child("allDays");
+
+        tripRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                daysList.clear(); // Clear the existing list
+                for (DataSnapshot daySnapshot : snapshot.getChildren()) {
+                    String dayName = daySnapshot.getKey(); // Get the day name
+                    daysList.add(dayName);
+                }
+                dayAdapter.notifyDataSetChanged(); // Notify adapter of data change
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Failed to load days: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -90,10 +120,16 @@ public class TripPlansActivity extends AppCompatActivity {
     }
 
     private void addNewDay() {
-        // Generate a new day item, here it's just a placeholder
         String newDay = "Day " + dayNumber();
-        daysList.add(newDay);
-        dayAdapter.notifyItemInserted(daysList.size() - 1); // Notify adapter of the new item
+        tripRef.child(newDay).setValue(true) // Save new day to Firebase
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        daysList.add(newDay);
+                        dayAdapter.notifyItemInserted(daysList.size() - 1); // Notify adapter of the new item
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to add day: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private int dayNumber() {
