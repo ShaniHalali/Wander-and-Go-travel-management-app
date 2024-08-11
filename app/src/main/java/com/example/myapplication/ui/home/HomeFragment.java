@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
         // Fetch trips from Firebase
         fetchTripsFromFirebase();
 
-        // Button to add new trip
+        // MARK:Button to add new trip
         com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner);
         addButton.setOnClickListener(v -> {
             String tripName = "Trip " + nextTripNumber++;
@@ -143,6 +143,7 @@ public class HomeFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(getContext(), "New trip added", Toast.LENGTH_SHORT).show();
+                        myRef.child(tripName).child("tripDestination").setValue(tripName);
                     } else {
                         Toast.makeText(getContext(), "Failed to save data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }

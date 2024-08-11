@@ -33,7 +33,7 @@ public class TripPlansActivity extends AppCompatActivity {
         String tripName = intent.getStringExtra("trip_name");
 
         // Initialize RecyclerView and Adapter
-        daysList = new ArrayList<>(); // Initialize with any existing data if needed
+        daysList = new ArrayList<>();
         dayAdapter = new DayAdapter(this, daysList, position -> {
             // Handle long click to remove item
             dayAdapter.removeItem(position);

@@ -4,13 +4,13 @@ import com.example.myapplication.Models.DailySchedule;
 import com.example.myapplication.Models.Trip;
 
 public class DataManager {
-    private static int tripCount=0;
+    private static int tripCount=1;
 
     public static Trip createTripsWithDailySchedules(){
         Trip trip = new Trip();
 
         trip.getAllDays()
-                .put("France day "+ getNextTripCount(),
+                .put("day "+ tripCount,
                         new DailySchedule()
                                 .setDayTitle("Day "+ tripCount)
                                 .setDayNumber( getCurrentTripCount())
