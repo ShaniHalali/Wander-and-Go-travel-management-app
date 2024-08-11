@@ -23,7 +23,7 @@ import java.util.List;
 public class TripPlansActivity extends AppCompatActivity {
     private DayAdapter dayAdapter;
     private List<String> daysList;
-    int currentDay=1;
+    int currentDay = 1;
     private TextInputEditText trip_Title_Input;
     private RecyclerView trip_LST_days;
     private ExtendedFloatingActionButton day_BTN_dayEdit;
@@ -39,7 +39,6 @@ public class TripPlansActivity extends AppCompatActivity {
         findViews();
         initViews();
 
-
         // Initialize RecyclerView and Adapter
         daysList = new ArrayList<>();
         dayAdapter = new DayAdapter(this, daysList, position -> {
@@ -48,11 +47,10 @@ public class TripPlansActivity extends AppCompatActivity {
         }, day -> {
             // Handle schedule button click event
             Intent scheduleIntent = new Intent(TripPlansActivity.this, DailyScheduleActivity.class);
-            scheduleIntent.putExtra("DAY_NAME",day); // Ensure "DAY_NAME" is the same key used in TripScheduleActivity
+            scheduleIntent.putExtra("DAY_NAME", day); // Ensure "DAY_NAME" is the same key used in DailyScheduleActivity
             startActivity(scheduleIntent);
 
         });
-
 
         trip_LST_days.setLayoutManager(new LinearLayoutManager(this)); // Ensure the LayoutManager is set
         trip_LST_days.setAdapter(dayAdapter);
@@ -74,20 +72,20 @@ public class TripPlansActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_app_bar,menu);
+        getMenuInflater().inflate(R.menu.top_app_bar, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.item_done){
+        if (id == R.id.item_done) {
             message("Done");
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void message(String msg){
+    public void message(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 

@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
                         tripList.remove(position);
                         tripAdapter.notifyItemRemoved(position);
                         tripAdapter.notifyItemRangeChanged(position, tripList.size());
-                        Toast.makeText(getContext(), tripName+ " removed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), tripName + " removed", Toast.LENGTH_SHORT).show();
                         myRef.child(tripName).removeValue();
 
                         // Check if the list is empty after removal
@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment {
                 position -> {
                     // Handle the schedule button click
                     Intent intent = new Intent(getContext(), TripPlansActivity.class);
+                    tripName = tripList.get(position); // Get the trip name from the clicked position
                     Toast.makeText(getContext(), "Schedule Activity", Toast.LENGTH_SHORT).show();
                     intent.putExtra("trip_name", tripName); // Pass the trip name to the new activity
                     startActivity(intent);
@@ -77,7 +78,7 @@ public class HomeFragment extends Fragment {
         // Fetch trips from Firebase
         fetchTripsFromFirebase();
 
-        // MARK:Button to add new trip
+        // MARK: Button to add new trip
         com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner);
         addButton.setOnClickListener(v -> {
             String tripName = "Trip " + nextTripNumber++;
