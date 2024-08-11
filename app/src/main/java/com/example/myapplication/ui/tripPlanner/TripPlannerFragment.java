@@ -102,8 +102,11 @@ public class TripPlannerFragment extends Fragment {
     private void saveDataToFirebase() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("trips");
+        DatabaseReference myRefUnderTrips = myRef.child("trip3");
+        DatabaseReference myRefUnderTrips1 = myRef.child("trip1");
 
-        myRef.setValue(DataManager.creatrTripsWithDailySchedules())
+
+        myRefUnderTrips1.setValue(DataManager.createTripsWithDailySchedules())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(getContext(), "Data successfully saved", Toast.LENGTH_SHORT).show();

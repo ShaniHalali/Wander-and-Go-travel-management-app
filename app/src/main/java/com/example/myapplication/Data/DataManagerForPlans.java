@@ -1,9 +1,5 @@
 package com.example.myapplication.Data;
 
-import com.example.myapplication.Models.DailySchedule;
-import com.example.myapplication.Models.Trips;
-import com.example.myapplication.Models.TripsPlanes;
-
 public class DataManagerForPlans {
 /*
     public static TripsPlanes creatrTripsWithDailySchedules(){

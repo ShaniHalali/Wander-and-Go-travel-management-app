@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:focusableInTouchMode="true"
     android:background="@color/pink_red_50"
-    tools:context=".ui.ui.TripScheduleActivity"
+    tools:context=".ui.ui.DailyScheduleActivity"
     >
 
     <LinearLayout
@@ -118,6 +118,7 @@
                 android:textColorHint="@color/black"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/day_TIN_morning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="write here"
@@ -192,6 +193,7 @@
                 android:textColorHint="@color/black"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/day_TIN_noon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="write here"
@@ -266,6 +268,7 @@
                 android:textColorHint="@color/black"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/day_TIN_evening"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="write here"
@@ -340,6 +343,7 @@
                 android:textColorHint="@color/black"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/day_TIN_reservations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="write here"
@@ -415,6 +419,7 @@
                 android:textColorHint="@color/black"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/day_TIN_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="write here"

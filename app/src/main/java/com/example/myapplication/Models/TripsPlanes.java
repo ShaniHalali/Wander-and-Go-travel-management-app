@@ -3,18 +3,18 @@ package com.example.myapplication.Models;
 import java.util.HashMap;
 
 public class TripsPlanes {
-    private String name="";
+    private String destination ="";
     private HashMap<String, Plan> allTrips = new HashMap<>();
 
     public TripsPlanes() {
     }
 
-    public String getName() {
-        return name;
+    public String getDestination() {
+        return destination;
     }
 
-    public TripsPlanes setName(String name) {
-        this.name = name;
+    public TripsPlanes setDestination(String destination) {
+        this.destination = destination;
         return this;
     }
 
@@ -30,7 +30,7 @@ public class TripsPlanes {
     @Override
     public String toString() {
         return "TripsPlanes{" +
-                "name='" + name + '\'' +
+                "destination='" + destination + '\'' +
                 ", allTrips=" + allTrips +
                 '}';
     }

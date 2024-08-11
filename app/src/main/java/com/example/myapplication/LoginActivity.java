@@ -5,13 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
@@ -26,7 +22,7 @@ import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // See: https://developer.android.com/training/basics/intents/result
+    // Register for the Firebase authentication result callback
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
             new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
@@ -37,40 +33,43 @@ public class LoginActivity extends AppCompatActivity {
             }
     );
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(user == null){
+        if (user == null) {
+            // If the user is not signed in, start the sign-in flow
             signIn();
-        }
-        else{
+        } else {
+            // If the user is already signed in, proceed to the main activity
             transactToMainActivity();
         }
-
     }
 
     private void transactToMainActivity() {
-        Intent i = new Intent(this,LottieSplashActivity.class);
+        // Transition to the LottieSplashActivity
+        Intent i = new Intent(this, LottieSplashActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         finish();
     }
 
-    private void signIn(){
+    private void signIn() {
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.PhoneBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build());
+                new AuthUI.IdpConfig.GoogleBuilder().build()
+        );
 
-// Create and launch sign-in intent
+        // Create and launch sign-in intent
         Intent signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
-                .setLogo(R.drawable.pink_plane)
+                .setLogo(R.drawable.pink_plane)  // Set your logo here
                 .build();
         signInLauncher.launch(signInIntent);
     }
@@ -79,20 +78,21 @@ public class LoginActivity extends AppCompatActivity {
         IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
-
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 updateNavHeader(user);
             }
             transactToMainActivity();
-            // ...
         } else {
-            // Sign in failed. If response is null the user canceled the
-            // sign-in flow using the back button. Otherwise check
-            // response.getError().getErrorCode() and handle the error.
-            // ...
-
-            // to do toast !!!--------------------
+            // Sign in failed
+            if (response == null) {
+                // User canceled the sign-in flow using the back button
+                // Optionally show a toast message
+            } else {
+                // Handle error cases here
+                // Log the error or show a relevant message to the user
+                // Example: response.getError().getErrorCode()
+            }
         }
     }
 

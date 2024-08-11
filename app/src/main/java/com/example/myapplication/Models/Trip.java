@@ -2,19 +2,19 @@ package com.example.myapplication.Models;
 
 import java.util.HashMap;
 
-public class Trips {
-    private String name="";
+public class Trip {
+    private String TripDestination ="";
     private HashMap<String, DailySchedule> allDays = new HashMap<>();
 
-    public Trips() {
+    public Trip() {
     }
 
-    public String getName() {
-        return name;
+    public String getTripDestination() {
+        return TripDestination;
     }
 
-    public Trips setName(String name) {
-        this.name = name;
+    public Trip setTripDestination(String tripDestination) {
+        this.TripDestination = tripDestination;
         return this;
     }
 
@@ -22,15 +22,15 @@ public class Trips {
         return allDays;
     }
 
-    public Trips setAllDays(HashMap<String, DailySchedule> allDays) {
+    public Trip setAllDays(HashMap<String, DailySchedule> allDays) {
         this.allDays = allDays;
         return this;
     }
 
     @Override
     public String toString() {
-        return "Trips{" +
-                "name='" + name + '\'' +
+        return "Trip{" +
+                "TripDestination='" + TripDestination + '\'' +
                 ", allDays=" + allDays +
                 '}';
     }

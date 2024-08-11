@@ -1,31 +1,33 @@
 package com.example.myapplication.Models;
 
-import java.util.ArrayList;
-
 public class DailySchedule {
-    private String title="";
-    private String schedule="";
+    private String dayTitle ="";
+    private int dayNumber=0;
+    private String morningSchedule ="";
+    private String noonSchedule ="";
+    private String eveningSchedule ="";
     private String reservations="";
-    private ArrayList<String> packingList;
+    private String notes ="";
+
 
     public DailySchedule() {
     }
 
-    public String getTitle() {
-        return title;
+    public String getDayTitle() {
+        return dayTitle;
     }
 
-    public DailySchedule setTitle(String title) {
-        this.title = title;
+    public DailySchedule setDayTitle(String dayTitle) {
+        this.dayTitle = dayTitle;
         return this;
     }
 
     public String getDailySchedule() {
-        return schedule;
+        return morningSchedule;
     }
 
     public DailySchedule setDailySchedule(String dailySchedule) {
-        this.schedule = dailySchedule;
+        this.morningSchedule = dailySchedule;
         return this;
     }
 
@@ -38,22 +40,62 @@ public class DailySchedule {
         return this;
     }
 
-    public ArrayList<String> getPackingList() {
-        return packingList;
+
+    public String getMorningSchedule() {
+        return morningSchedule;
     }
 
-    public DailySchedule setPackingList(ArrayList<String> packingList) {
-        this.packingList = packingList;
+    public DailySchedule setMorningSchedule(String morningSchedule) {
+        this.morningSchedule = morningSchedule;
+        return this;
+    }
+
+    public String getNoonSchedule() {
+        return noonSchedule;
+    }
+
+    public DailySchedule setNoonSchedule(String noonSchedule) {
+        this.noonSchedule = noonSchedule;
+        return this;
+    }
+
+    public String getEveningSchedule() {
+        return eveningSchedule;
+    }
+
+    public DailySchedule setEveningSchedule(String eveningSchedule) {
+        this.eveningSchedule = eveningSchedule;
+        return this;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public DailySchedule setNotes(String notes) {
+        this.notes = notes;
+        return this;
+    }
+
+    public int getDayNumber() {
+        return dayNumber;
+    }
+
+    public DailySchedule setDayNumber(int dayNumber) {
+        this.dayNumber = dayNumber;
         return this;
     }
 
     @Override
     public String toString() {
-        return "TripSchedule{" +
-                "title='" + title + '\'' +
-                ", dailySchedule='" + schedule + '\'' +
+        return "DailySchedule{" +
+                "dayTitle='" + dayTitle + '\'' +
+                ", dayNumber=" + dayNumber +
+                ", morningSchedule='" + morningSchedule + '\'' +
+                ", noonSchedule='" + noonSchedule + '\'' +
+                ", eveningSchedule='" + eveningSchedule + '\'' +
                 ", reservations='" + reservations + '\'' +
-                ", packingList=" + packingList +
+                ", notes='" + notes + '\'' +
                 '}';
     }
 }

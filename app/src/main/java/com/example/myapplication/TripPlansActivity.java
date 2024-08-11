@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Adapter.DayAdapter;
-import com.example.myapplication.ui.ui.TripScheduleActivity;
+import com.example.myapplication.ui.ui.DailyScheduleActivity;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DaysTripActivity extends AppCompatActivity {
+public class TripPlansActivity extends AppCompatActivity {
     private DayAdapter dayAdapter;
     private List<String> daysList;
     int currentDay=1;
@@ -26,12 +26,11 @@ public class DaysTripActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_days_trip);
+        setContentView(R.layout.activity_trip_plans);
 
         // Get the trip name from the intent
         Intent intent = getIntent();
         String tripName = intent.getStringExtra("trip_name");
-        // Use tripName as needed
 
         // Initialize RecyclerView and Adapter
         daysList = new ArrayList<>(); // Initialize with any existing data if needed
@@ -40,8 +39,8 @@ public class DaysTripActivity extends AppCompatActivity {
             dayAdapter.removeItem(position);
         }, day -> {
             // Handle schedule button click event
-            Intent scheduleIntent = new Intent(DaysTripActivity.this, TripScheduleActivity.class);
-            scheduleIntent.putExtra("DAY_NAME", day); // Ensure "DAY_NAME" is the same key used in TripScheduleActivity
+            Intent scheduleIntent = new Intent(TripPlansActivity.this, DailyScheduleActivity.class);
+            scheduleIntent.putExtra("DAY_NAME",day); // Ensure "DAY_NAME" is the same key used in TripScheduleActivity
             startActivity(scheduleIntent);
 
         });

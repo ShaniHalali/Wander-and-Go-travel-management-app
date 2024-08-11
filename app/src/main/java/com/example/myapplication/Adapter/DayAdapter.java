@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.ui.ui.TripScheduleActivity;
+import com.example.myapplication.ui.ui.DailyScheduleActivity;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
         holder.dayScheduleButton.setOnClickListener(v -> {
             if (onScheduleClickListener != null) {
                 // Create Intent to start TripScheduleActivity
-                Intent intent = new Intent(context, TripScheduleActivity.class);
+                Intent intent = new Intent(context, DailyScheduleActivity.class);
                 intent.putExtra("trip_name", day); // Pass the selected day name
                 context.startActivity(intent);
             }
