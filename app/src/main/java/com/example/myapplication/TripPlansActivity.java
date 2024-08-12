@@ -55,10 +55,7 @@ public class TripPlansActivity extends AppCompatActivity {
 
         // Initialize the list and adapter for the days
         daysList = new ArrayList<>();
-        dayAdapter = new DayAdapter(this, daysList, position -> {
-            // Handle long click to remove an item
-            dayAdapter.removeItem(position);
-        }, day -> {
+        dayAdapter = new DayAdapter(this, daysList, this::removeDayFromFirebase, day -> {
             // Handle the daily schedule button click event
             Intent scheduleIntent = new Intent(TripPlansActivity.this, DailyScheduleActivity.class);
             scheduleIntent.putExtra("DAY_NAME", day);
@@ -134,5 +131,22 @@ public class TripPlansActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Failed to add day: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void removeDayFromFirebase(int position) {
+        if (position >= 0 && position < daysList.size()) {
+            String dayToRemove = daysList.get(position);
+            tripRef.child(dayToRemove).removeValue()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            daysList.remove(position);
+                            dayAdapter.notifyItemRemoved(position);
+                            dayAdapter.notifyItemRangeChanged(position, daysList.size());
+                            Toast.makeText(getApplicationContext(), "Day removed successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Failed to remove day: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 }
