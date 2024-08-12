@@ -96,34 +96,16 @@ public class HomeFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<TripItem> trips = new ArrayList<>();
+                tripList.clear(); // Clear the existing trip list
                 for (DataSnapshot tripSnapshot : snapshot.getChildren()) {
                     String tripName = tripSnapshot.getKey();
-                    try {
-                        int tripNumber = Integer.parseInt(tripName.replace("Trip ", ""));
-                        trips.add(new TripItem(tripName, tripNumber));
-                    } catch (NumberFormatException e) {
-                        // Handle the case where the trip name does not follow the expected format
-                        e.printStackTrace();
-                    }
+                    tripList.add(tripName); // Add each trip name directly to the list
                 }
 
-                // Sort trips based on their numeric value
-                trips.sort((t1, t2) -> Integer.compare(t1.getTripNumber(), t2.getTripNumber()));
-
-                // Clear and update the trip list
-                tripList.clear();
-                for (TripItem trip : trips) {
-                    tripList.add(trip.getTripName());
-                }
                 tripAdapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
 
-                // Update the nextTripNumber to be one more than the maximum existing trip number
-                if (!trips.isEmpty()) {
-                    nextTripNumber = trips.get(trips.size() - 1).getTripNumber() + 1;
-                } else {
-                    nextTripNumber = 1; // Reset counter if there are no trips
-                }
+                // Update nextTripNumber if needed
+                nextTripNumber = tripList.size() + 1; // Or any other logic based on your needs
             }
 
             @Override
@@ -132,6 +114,7 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
 
     private void addNewTrip(String tripName) {
         tripList.add(tripName);

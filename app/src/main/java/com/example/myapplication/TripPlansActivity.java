@@ -33,6 +33,7 @@ import java.util.Map;
 
 
 
+
 public class TripPlansActivity extends AppCompatActivity {
     private DayAdapter dayAdapter;
     private List<String> daysList;
@@ -41,7 +42,9 @@ public class TripPlansActivity extends AppCompatActivity {
     private ExtendedFloatingActionButton day_BTN_dayEdit;
     private String tripName;
     private DatabaseReference tripRef;
-
+    private int count=1;
+    private DailySchedule newDaySchedule;
+    private String newDayTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,7 @@ public class TripPlansActivity extends AppCompatActivity {
             // Handle the daily schedule button click event
             Intent scheduleIntent = new Intent(TripPlansActivity.this, DailyScheduleActivity.class);
             scheduleIntent.putExtra("DAY_NAME", day);
+            scheduleIntent.putExtra("trip_name", tripName); // Pass the trip name to the next activity
             startActivity(scheduleIntent);
         });
 
@@ -71,6 +75,9 @@ public class TripPlansActivity extends AppCompatActivity {
 
         // Fetch days from Firebase
         fetchDaysFromFirebase();
+
+        // Set trip name in the input field
+        trip_Title_Input.setText(tripName);
     }
 
     private void initViews() {
@@ -111,12 +118,22 @@ public class TripPlansActivity extends AppCompatActivity {
         });
     }
 
-    private void addNewDay() {
-        // Generate the new day title
-        String newDayTitle = "Day " + (daysList.size() + 1);
 
+    private void addNewDay() {
+
+        // Generate the new day title
+        newDayTitle = "Day " + (daysList.size() + 1);
+        //String newDayTitle = "New Day";
         // Create a new DailySchedule object using DataManager
-        DailySchedule newDaySchedule = DataManager.NewDailyDay(newDayTitle);
+
+        if (daysList.contains(newDayTitle)) {
+            newDayTitle="New Day "+count;
+            count++;
+        }
+
+            newDaySchedule = DataManager.NewDailyDay(newDayTitle);
+
+
 
         // Save the new day to Firebase
         tripRef.child(newDayTitle).setValue(newDaySchedule)
@@ -127,6 +144,7 @@ public class TripPlansActivity extends AppCompatActivity {
                             daysList.add(newDayTitle);
                             dayAdapter.notifyItemInserted(daysList.size() - 1);
                         }
+
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to add day: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -139,14 +157,79 @@ public class TripPlansActivity extends AppCompatActivity {
             tripRef.child(dayToRemove).removeValue()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            daysList.remove(position);
-                            dayAdapter.notifyItemRemoved(position);
-                            dayAdapter.notifyItemRangeChanged(position, daysList.size());
+                            // Instead of removing directly from the list, fetch days again
+                            fetchDaysFromFirebase();
                             Toast.makeText(getApplicationContext(), "Day removed successfully", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getApplicationContext(), "Failed to remove day: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_app_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.item_done) {
+            // Get the new trip name from the input field
+            String newTripName = trip_Title_Input.getText().toString().trim();
+
+            if (!newTripName.isEmpty() && !newTripName.equals(tripName)) {
+                // Update Firebase Database with the new trip name
+                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Trips");
+
+                // Copy the data under the old trip name to the new trip name
+                databaseRef.child(tripName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Copy the data to the new trip name node
+                            databaseRef.child(newTripName).setValue(dataSnapshot.getValue(), (error, ref) -> {
+                                if (error == null) {
+                                    // Remove the old trip name node
+                                    databaseRef.child(tripName).removeValue();
+
+                                    // Update the local tripName variable
+                                    tripName = newTripName;
+
+                                    // Update the tripRef to point to the new trip name
+                                    tripRef = databaseRef.child(newTripName).child("allDays");
+
+                                    // Fetch the days again from the updated tripRef
+                                    fetchDaysFromFirebase();
+
+                                    // Show a success message
+                                    message("Trip name updated successfully.");
+                                } else {
+                                    message("Failed to update trip name: " + error.getMessage());
+                                }
+                            });
+                        } else {
+                            message("Failed to find the trip in the database.");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        message("Database error: " + databaseError.getMessage());
+                    }
+                });
+            } else {
+                message("Please enter a valid new trip name.");
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    public void message(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 }
