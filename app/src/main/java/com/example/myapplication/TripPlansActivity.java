@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static com.example.myapplication.Data.DataManager.NewDailyDay;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Adapter.DayAdapter;
+import com.example.myapplication.Data.DataManager;
+import com.example.myapplication.Models.DailySchedule;
 import com.example.myapplication.ui.ui.DailyScheduleActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -23,17 +27,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+
 
 public class TripPlansActivity extends AppCompatActivity {
     private DayAdapter dayAdapter;
     private List<String> daysList;
-    private int currentDay = 1;
     private TextInputEditText trip_Title_Input;
     private RecyclerView trip_LST_days;
     private ExtendedFloatingActionButton day_BTN_dayEdit;
     private String tripName;
-    private DatabaseReference tripRef; // Reference to the trip's node in Firebase
+    private DatabaseReference tripRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,25 +49,26 @@ public class TripPlansActivity extends AppCompatActivity {
 
         // Get the trip name from the intent
         tripName = getIntent().getStringExtra("trip_name");
+
         findViews();
         initViews();
 
-        // Initialize RecyclerView and Adapter
+        // Initialize the list and adapter for the days
         daysList = new ArrayList<>();
         dayAdapter = new DayAdapter(this, daysList, position -> {
-            // Handle long click to remove item
+            // Handle long click to remove an item
             dayAdapter.removeItem(position);
         }, day -> {
-            // Handle schedule button click event
+            // Handle the daily schedule button click event
             Intent scheduleIntent = new Intent(TripPlansActivity.this, DailyScheduleActivity.class);
-            scheduleIntent.putExtra("DAY_NAME", day); // Ensure "DAY_NAME" is the same key used in DailyScheduleActivity
+            scheduleIntent.putExtra("DAY_NAME", day);
             startActivity(scheduleIntent);
         });
 
-        trip_LST_days.setLayoutManager(new LinearLayoutManager(this)); // Ensure the LayoutManager is set
+        trip_LST_days.setLayoutManager(new LinearLayoutManager(this));
         trip_LST_days.setAdapter(dayAdapter);
 
-        // Set up Add Day button
+        // Set up the Add Day button
         MaterialButton addDayButton = findViewById(R.id.addDayButton);
         addDayButton.setOnClickListener(v -> addNewDay());
 
@@ -85,12 +93,18 @@ public class TripPlansActivity extends AppCompatActivity {
         tripRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                daysList.clear(); // Clear the existing list
+                List<String> newDaysList = new ArrayList<>();
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
-                    String dayName = daySnapshot.getKey(); // Get the day name
-                    daysList.add(dayName);
+                    String dayName = daySnapshot.child("dayTitle").getValue(String.class);
+                    if (dayName != null && !newDaysList.contains(dayName)) {
+                        newDaysList.add(dayName);
+                    }
                 }
-                dayAdapter.notifyDataSetChanged(); // Notify adapter of data change
+
+                // Clear existing list and update with new data
+                daysList.clear();
+                daysList.addAll(newDaysList);
+                dayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -100,39 +114,25 @@ public class TripPlansActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_app_bar, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.item_done) {
-            message("Done");
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void message(String msg) {
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-    }
-
     private void addNewDay() {
-        String newDay = "Day " + dayNumber();
-        tripRef.child(newDay).setValue(true) // Save new day to Firebase
+        // Generate the new day title
+        String newDayTitle = "Day " + (daysList.size() + 1);
+
+        // Create a new DailySchedule object using DataManager
+        DailySchedule newDaySchedule = DataManager.NewDailyDay(newDayTitle);
+
+        // Save the new day to Firebase
+        tripRef.child(newDayTitle).setValue(newDaySchedule)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        daysList.add(newDay);
-                        dayAdapter.notifyItemInserted(daysList.size() - 1); // Notify adapter of the new item
+                        // Add new day directly to the list and notify adapter
+                        if (!daysList.contains(newDayTitle)) {
+                            daysList.add(newDayTitle);
+                            dayAdapter.notifyItemInserted(daysList.size() - 1);
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to add day: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private int dayNumber() {
-        return currentDay++;
     }
 }

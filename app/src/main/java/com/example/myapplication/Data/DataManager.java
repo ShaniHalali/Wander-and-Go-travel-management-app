@@ -24,8 +24,28 @@ public class DataManager {
                                 ) ;
 
 
+
+
         return trip;
     }
+
+    public static DailySchedule NewDailyDay(String nextDay){
+        DailySchedule dailySchedule = new DailySchedule();
+
+        dailySchedule
+                .setDayTitle(nextDay)
+                .setDayNumber( getCurrentTripCount())
+                .setMorningSchedule("")
+                .setNoonSchedule("")
+                .setEveningSchedule("")
+                .setReservations("")
+                .setNotes("")
+                .setDailySchedule("");
+
+
+        return dailySchedule;
+    }
+
 
     public static int getCurrentTripCount() {
         return tripCount;
