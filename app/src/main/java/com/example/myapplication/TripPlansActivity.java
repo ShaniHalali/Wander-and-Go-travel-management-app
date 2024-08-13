@@ -77,7 +77,7 @@ public class TripPlansActivity extends AppCompatActivity {
         fetchDaysFromFirebase();
 
         // Set trip name in the input field
-        trip_Title_Input.setText(tripName);
+        //trip_Title_Input.setText(tripName);
     }
 
     private void initViews() {
@@ -178,55 +178,36 @@ public class TripPlansActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.item_done) {
-            // Get the new trip name from the input field
-            String newTripName = trip_Title_Input.getText().toString().trim();
+            // Get the new trip destination from the input field
+            String newTripDestination = trip_Title_Input.getText().toString().trim();
 
-            if (!newTripName.isEmpty() && !newTripName.equals(tripName)) {
-                // Update Firebase Database with the new trip name
-                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Trips");
+            // Check if the new trip destination is not empty
+            if (!newTripDestination.isEmpty()) {
+                // Get a reference to the "tripDestination" field within the current trip
+                DatabaseReference tripDestinationRef = FirebaseDatabase.getInstance()
+                        .getReference("Trips")
+                        .child(tripName)
+                        .child("tripDestination");
 
-                // Copy the data under the old trip name to the new trip name
-                databaseRef.child(tripName).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            // Copy the data to the new trip name node
-                            databaseRef.child(newTripName).setValue(dataSnapshot.getValue(), (error, ref) -> {
-                                if (error == null) {
-                                    // Remove the old trip name node
-                                    databaseRef.child(tripName).removeValue();
-
-                                    // Update the local tripName variable
-                                    tripName = newTripName;
-
-                                    // Update the tripRef to point to the new trip name
-                                    tripRef = databaseRef.child(newTripName).child("allDays");
-
-                                    // Fetch the days again from the updated tripRef
-                                    fetchDaysFromFirebase();
-
-                                    // Show a success message
-                                    message("Trip name updated successfully.");
-                                } else {
-                                    message("Failed to update trip name: " + error.getMessage());
-                                }
-                            });
-                        } else {
-                            message("Failed to find the trip in the database.");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        message("Database error: " + databaseError.getMessage());
+                // Update the "tripDestination" field with the new value
+                tripDestinationRef.setValue(newTripDestination, (error, ref) -> {
+                    if (error == null) {
+                        // Show a success message to the user
+                        message("Trip destination updated successfully.");
+                    } else {
+                        // Show an error message if the update fails
+                        message("Failed to update trip destination: " + error.getMessage());
                     }
                 });
             } else {
-                message("Please enter a valid new trip name.");
+                // Show a message if the new trip destination is invalid
+                message("Please enter a valid trip destination.");
             }
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
     public void message(String msg) {
