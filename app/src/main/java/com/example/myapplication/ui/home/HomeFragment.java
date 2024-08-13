@@ -23,13 +23,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TripAdapter tripAdapter;
     private List<String> tripList;
+    private Map<String, String> tripIdToDestinationMap; // New map to store trip IDs and destinations
     private DatabaseReference myRef;
     private int nextTripNumber = 1; // Counter to track the next unique trip number
     private String tripName;
@@ -44,16 +47,17 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         tripList = new ArrayList<>();
+        tripIdToDestinationMap = new HashMap<>(); // Initialize the map
         tripAdapter = new TripAdapter(tripList,
                 position -> {
                     // Handle the long click event
                     if (position >= 0 && position < tripList.size()) {
-                        tripName = tripList.get(position);
+                        String tripId = getKeyByValue(tripIdToDestinationMap, tripList.get(position));
                         tripList.remove(position);
                         tripAdapter.notifyItemRemoved(position);
                         tripAdapter.notifyItemRangeChanged(position, tripList.size());
-                        Toast.makeText(getContext(), tripName + " removed", Toast.LENGTH_SHORT).show();
-                        myRef.child(tripName).removeValue();
+                        Toast.makeText(getContext(), tripId + " removed", Toast.LENGTH_SHORT).show();
+                        myRef.child(tripId).removeValue();
 
                         // Check if the list is empty after removal
                         if (tripList.isEmpty()) {
@@ -66,9 +70,10 @@ public class HomeFragment extends Fragment {
                 position -> {
                     // Handle the schedule button click
                     Intent intent = new Intent(getContext(), TripPlansActivity.class);
-                    tripName = tripList.get(position); // Get the trip name from the clicked position
+                    String tripDestination = tripList.get(position); // Get the trip destination from the clicked position
+                    String tripId = getKeyByValue(tripIdToDestinationMap, tripDestination);
                     Toast.makeText(getContext(), "Schedule Activity", Toast.LENGTH_SHORT).show();
-                    intent.putExtra("trip_name", tripName); // Pass the trip name to the new activity
+                    intent.putExtra("trip_name", tripId); // Pass the trip ID to the new activity
                     startActivity(intent);
                 }
         );
@@ -81,9 +86,9 @@ public class HomeFragment extends Fragment {
         // MARK: Button to add new trip
         com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner);
         addButton.setOnClickListener(v -> {
-            String tripName = "Trip " + nextTripNumber++;
-            addNewTrip(tripName);
-            saveDataToFirebase(tripName);
+            String tripId = "Trip " + nextTripNumber++;
+            addNewTrip(tripId);
+            saveDataToFirebase(tripId);
         });
 
         return root;
@@ -97,9 +102,14 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tripList.clear(); // Clear the existing trip list
+                tripIdToDestinationMap.clear(); // Clear the map
                 for (DataSnapshot tripSnapshot : snapshot.getChildren()) {
-                    String tripName = tripSnapshot.getKey();
-                    tripList.add(tripName); // Add each trip name directly to the list
+                    String tripId = tripSnapshot.getKey();
+                    String tripDestination = tripSnapshot.child("tripDestination").getValue(String.class);
+                    if (tripDestination != null) {
+                        tripList.add(tripDestination); // Add each trip destination to the list
+                        tripIdToDestinationMap.put(tripId, tripDestination); // Map the trip ID to the destination
+                    }
                 }
 
                 tripAdapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
@@ -114,7 +124,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
 
     private void addNewTrip(String tripName) {
         tripList.add(tripName);
@@ -135,21 +144,12 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    private static class TripItem {
-        private final String tripName;
-        private final int tripNumber;
-
-        public TripItem(String tripName, int tripNumber) {
-            this.tripName = tripName;
-            this.tripNumber = tripNumber;
+    private String getKeyByValue(Map<String, String> map, String value) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
         }
-
-        public String getTripName() {
-            return tripName;
-        }
-
-        public int getTripNumber() {
-            return tripNumber;
-        }
+        return null;
     }
 }
