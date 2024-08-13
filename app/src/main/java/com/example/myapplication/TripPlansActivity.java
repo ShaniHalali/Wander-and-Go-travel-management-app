@@ -33,7 +33,6 @@ import java.util.Map;
 
 
 
-
 public class TripPlansActivity extends AppCompatActivity {
     private DayAdapter dayAdapter;
     private List<String> daysList;
@@ -42,9 +41,13 @@ public class TripPlansActivity extends AppCompatActivity {
     private ExtendedFloatingActionButton day_BTN_dayEdit;
     private String tripName;
     private DatabaseReference tripRef;
-    private int count=1;
+    private int count = 1;
     private DailySchedule newDaySchedule;
     private String newDayTitle;
+
+    private String tripDestination;
+    private DatabaseReference tripDestinationRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,13 +78,10 @@ public class TripPlansActivity extends AppCompatActivity {
 
         // Fetch days from Firebase
         fetchDaysFromFirebase();
-
-        // Set trip name in the input field
-        //trip_Title_Input.setText(tripName);
     }
 
     private void initViews() {
-        trip_Title_Input.setText(tripName);
+        trip_Title_Input.setText(tripDestination);
     }
 
     private void findViews() {
@@ -93,6 +93,21 @@ public class TripPlansActivity extends AppCompatActivity {
     private void fetchDaysFromFirebase() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         tripRef = database.getReference("Trips").child(tripName).child("allDays");
+        tripDestinationRef = database.getReference("Trips").child(tripName).child("tripDestination");
+
+        // Fetch the tripDestination value
+        tripDestinationRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tripDestination = snapshot.getValue(String.class);
+                trip_Title_Input.setText(tripDestination);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Failed to load trip destination: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         tripRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -118,22 +133,16 @@ public class TripPlansActivity extends AppCompatActivity {
         });
     }
 
-
     private void addNewDay() {
-
         // Generate the new day title
         newDayTitle = "Day " + (daysList.size() + 1);
-        //String newDayTitle = "New Day";
-        // Create a new DailySchedule object using DataManager
 
         if (daysList.contains(newDayTitle)) {
-            newDayTitle="New Day "+count;
+            newDayTitle = "New Day " + count;
             count++;
         }
 
-            newDaySchedule = DataManager.NewDailyDay(newDayTitle);
-
-
+        newDaySchedule = DataManager.NewDailyDay(newDayTitle);
 
         // Save the new day to Firebase
         tripRef.child(newDayTitle).setValue(newDaySchedule)
@@ -144,7 +153,6 @@ public class TripPlansActivity extends AppCompatActivity {
                             daysList.add(newDayTitle);
                             dayAdapter.notifyItemInserted(daysList.size() - 1);
                         }
-
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to add day: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -167,7 +175,6 @@ public class TripPlansActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_app_bar, menu);
@@ -181,34 +188,30 @@ public class TripPlansActivity extends AppCompatActivity {
             // Get the new trip destination from the input field
             String newTripDestination = trip_Title_Input.getText().toString().trim();
 
-            // Check if the new trip destination is not empty
             if (!newTripDestination.isEmpty()) {
-                // Get a reference to the "tripDestination" field within the current trip
-                DatabaseReference tripDestinationRef = FirebaseDatabase.getInstance()
-                        .getReference("Trips")
-                        .child(tripName)
-                        .child("tripDestination");
+                // Update Firebase Database with the new trip destination
+                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Trips").child(tripName);
 
-                // Update the "tripDestination" field with the new value
-                tripDestinationRef.setValue(newTripDestination, (error, ref) -> {
-                    if (error == null) {
-                        // Show a success message to the user
-                        message("Trip destination updated successfully.");
-                    } else {
-                        // Show an error message if the update fails
-                        message("Failed to update trip destination: " + error.getMessage());
-                    }
-                });
+                // Update the tripDestination field
+                databaseRef.child("tripDestination").setValue(newTripDestination)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Update the local tripDestination variable
+                                tripDestination = newTripDestination;
+
+                                // Show a success message
+                                message("Trip destination updated successfully.");
+                            } else {
+                                message("Failed to update trip destination: " + task.getException().getMessage());
+                            }
+                        });
             } else {
-                // Show a message if the new trip destination is invalid
                 message("Please enter a valid trip destination.");
             }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 
     public void message(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
