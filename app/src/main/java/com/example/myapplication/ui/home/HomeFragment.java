@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
                     String tripDestination = tripList.get(position); // Get the trip destination from the clicked position
                     String tripId = getKeyByValue(tripIdToDestinationMap, tripDestination);
                     Toast.makeText(getContext(), "Schedule Activity", Toast.LENGTH_SHORT).show();
-                    intent.putExtra("trip_name", tripId); // Pass the trip ID to the new activity
+                    intent.putExtra("Trips", tripId); // Pass the trip ID to the new activity
                     startActivity(intent);
                 }
         );

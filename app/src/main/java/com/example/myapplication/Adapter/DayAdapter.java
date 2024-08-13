@@ -21,10 +21,12 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     private OnItemLongClickListener onItemLongClickListener;
     private OnScheduleClickListener onScheduleClickListener;
     private Context context;
+    private String tripID;
 
-    public DayAdapter(Context context, List<String> daysList, OnItemLongClickListener onItemLongClickListener, OnScheduleClickListener onScheduleClickListener) {
+    public DayAdapter(Context context, List<String> daysList, String tripID ,OnItemLongClickListener onItemLongClickListener, OnScheduleClickListener onScheduleClickListener) {
         this.context = context;
         this.daysList = daysList;
+        this.tripID = tripID;
         this.onItemLongClickListener = onItemLongClickListener;
         this.onScheduleClickListener = onScheduleClickListener;
     }
@@ -56,7 +58,8 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
             if (onScheduleClickListener != null) {
                 // Create Intent to start DailyScheduleActivity
                 Intent intent = new Intent(context, DailyScheduleActivity.class);
-                intent.putExtra("DAY_NAME", day); // Pass the selected day name
+                intent.putExtra("DAY_NAME", day.toLowerCase()); // Pass the selected day name
+                intent.putExtra("TRIP",  tripID);
                 context.startActivity(intent);
             }
         });

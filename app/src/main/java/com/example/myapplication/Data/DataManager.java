@@ -19,7 +19,7 @@ public class DataManager {
                                 .setEveningSchedule("")
                                 .setReservations("")
                                 .setNotes("")
-                                .setDailySchedule("")
+                               
 
                 ) ;
 
@@ -39,8 +39,8 @@ public class DataManager {
                 .setNoonSchedule("")
                 .setEveningSchedule("")
                 .setReservations("")
-                .setNotes("")
-                .setDailySchedule("");
+                .setNotes("");
+
 
 
         return dailySchedule;

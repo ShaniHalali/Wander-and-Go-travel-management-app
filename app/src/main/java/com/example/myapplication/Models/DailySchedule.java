@@ -26,10 +26,6 @@ public class DailySchedule {
         return morningSchedule;
     }
 
-    public DailySchedule setDailySchedule(String dailySchedule) {
-        this.morningSchedule = dailySchedule;
-        return this;
-    }
 
     public String getReservations() {
         return reservations;

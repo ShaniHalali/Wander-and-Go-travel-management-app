@@ -4,6 +4,7 @@ import static com.example.myapplication.Data.DataManager.NewDailyDay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -39,7 +40,7 @@ public class TripPlansActivity extends AppCompatActivity {
     private TextInputEditText trip_Title_Input;
     private RecyclerView trip_LST_days;
     private ExtendedFloatingActionButton day_BTN_dayEdit;
-    private String tripName;
+    private String tripID;
     private DatabaseReference tripRef;
     private int count = 1;
     private DailySchedule newDaySchedule;
@@ -47,26 +48,34 @@ public class TripPlansActivity extends AppCompatActivity {
 
     private String tripDestination;
     private DatabaseReference tripDestinationRef;
+    private String id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_plans);
 
-        // Get the trip name from the intent
-        tripName = getIntent().getStringExtra("trip_name");
-
+        // Get the tripID from the intent
+        tripID = getIntent().getStringExtra("Trips");
+        //id=tripID;
+        Log.d("trips1", tripID);
         findViews();
+        Log.d("trips2", tripID);
         initViews();
+        Log.d("trips3", tripID);
+
 
         // Initialize the list and adapter for the days
         daysList = new ArrayList<>();
-        dayAdapter = new DayAdapter(this, daysList, this::removeDayFromFirebase, day -> {
+        dayAdapter = new DayAdapter(this, daysList, tripID, this::removeDayFromFirebase, (day)  -> {
             // Handle the daily schedule button click event
-            Intent scheduleIntent = new Intent(TripPlansActivity.this, DailyScheduleActivity.class);
-            scheduleIntent.putExtra("DAY_NAME", day);
-            scheduleIntent.putExtra("trip_name", tripName); // Pass the trip name to the next activity
+            Intent scheduleIntent = new Intent(this, DailyScheduleActivity.class);
+            Log.d("trips4", tripID);
+            scheduleIntent.putExtra("DAY_NAME", day.toLowerCase());
+            scheduleIntent.putExtra("TRIP",tripID);
             startActivity(scheduleIntent);
+
         });
 
         trip_LST_days.setLayoutManager(new LinearLayoutManager(this));
@@ -89,18 +98,19 @@ public class TripPlansActivity extends AppCompatActivity {
         trip_LST_days = findViewById(R.id.trip_LST_days);
         day_BTN_dayEdit = findViewById(R.id.day_BTN_dayEdit);
     }
-
     private void fetchDaysFromFirebase() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        tripRef = database.getReference("Trips").child(tripName).child("allDays");
-        tripDestinationRef = database.getReference("Trips").child(tripName).child("tripDestination");
+        tripRef = database.getReference("Trips").child(tripID).child("allDays");
+        tripDestinationRef = database.getReference("Trips").child(tripID).child("tripDestination");
 
         // Fetch the tripDestination value
         tripDestinationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tripDestination = snapshot.getValue(String.class);
-                trip_Title_Input.setText(tripDestination);
+                if (tripDestination != null) {
+                    trip_Title_Input.setText(tripDestination);
+                }
             }
 
             @Override
@@ -132,6 +142,7 @@ public class TripPlansActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void addNewDay() {
         // Generate the new day title
@@ -190,7 +201,7 @@ public class TripPlansActivity extends AppCompatActivity {
 
             if (!newTripDestination.isEmpty()) {
                 // Update Firebase Database with the new trip destination
-                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Trips").child(tripName);
+                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Trips").child(tripID);
 
                 // Update the tripDestination field
                 databaseRef.child("tripDestination").setValue(newTripDestination)
