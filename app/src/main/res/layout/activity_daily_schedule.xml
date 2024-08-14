@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:focusableInTouchMode="true"
-    android:background="@color/pink_red_50"
+    android:background="@drawable/cut_note"
     tools:context=".ui.ui.DailyScheduleActivity"
     >
 
@@ -17,47 +17,30 @@
 
         <!-- Day Title -->
         <TextView
+            android:id="@+id/tv_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TRIP"
+            android:textColor="@color/black"
+            android:textSize="50sp"
+            android:textStyle="bold"
+            android:layout_marginTop="65dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/concertone"/>
+
+        <TextView
             android:id="@+id/tv_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="input"
+            android:text="DAY X"
             android:textColor="@color/black"
             android:textSize="40sp"
             android:textStyle="bold"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp" />
 
-        <!-- Day Navigation -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:fontFamily="@font/concertone"/>
 
-            <Button
-                android:id="@+id/btn_previous_day"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Previous Day"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:backgroundTint="@color/pink_400"
-                android:textColor="@android:color/white"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/btn_next_day"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Next Day"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:backgroundTint="@color/pink_400"
-                android:textColor="@android:color/white"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
 
 
         <!-- Morning Schedule Section -->
@@ -68,7 +51,7 @@
             android:textSize="@dimen/_25sp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:fontFamily="@font/dancingscriptt"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,38 +64,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginHorizontal="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="9:00 AM - Breakfast at Cafe"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- Edit Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_edit"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit" />
-
-                <!-- Delete Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_delete"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete" />
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -143,7 +95,8 @@
             android:textSize="@dimen/_25sp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/dancingscriptt"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -156,38 +109,6 @@
             android:layout_marginBottom="16dp"
             android:layout_marginHorizontal="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="1:00 PM - Lunch at Bistro"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- Edit Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_edit"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit" />
-
-                <!-- Delete Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_delete"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete" />
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -218,7 +139,8 @@
             android:textSize="@dimen/_25sp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/dancingscriptt"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -231,38 +153,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginHorizontal="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="7:00 PM - Dinner at Restaurant"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- Edit Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_edit"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit" />
-
-                <!-- Delete Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_delete"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete" />
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -293,7 +184,8 @@
             android:textSize="@dimen/_25sp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/dancingscriptt"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -306,38 +198,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginHorizontal="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Hotel Check-in"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- Edit Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_edit"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit" />
-
-                <!-- Delete Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_delete"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete" />
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -369,7 +230,8 @@
             android:textColor="@color/black"
             android:textSize="@dimen/_25sp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/dancingscriptt"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -382,38 +244,6 @@
             android:layout_marginBottom="16dp"
             android:layout_marginHorizontal="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Packing Essentials"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- Edit Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_edit"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit" />
-
-                <!-- Delete Button -->
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_delete"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete" />
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -426,9 +256,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="write here"
-                android:inputType="date"
                 android:lines="3"
                 android:gravity="top"
+                android:inputType="textMultiLine"
                 android:overScrollMode="always"
                 android:scrollbars="vertical"
                 android:scrollbarStyle="insideInset"

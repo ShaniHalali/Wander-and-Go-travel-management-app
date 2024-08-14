@@ -29,8 +29,11 @@ public class DailyScheduleActivity extends AppCompatActivity {
     private TextInputEditText day_TIN_notes;
     private String dayName;
     private TextView tv_day;
+    private TextView tv_trip;
     private String tripKey;
     private DatabaseReference databaseReference;
+    private DatabaseReference dataTripDestination;
+    private String tripDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +46,6 @@ public class DailyScheduleActivity extends AppCompatActivity {
 
         Log.d("tripKey", "Trip Key: " + tripKey);
         Log.d("DailyScheduleActivity", "Day Name: " + dayName);
-
-        // Check if the inputs are null
-        if (tripKey == null) {
-            Toast.makeText(this, "Trip key is null", Toast.LENGTH_SHORT).show();
-        }
-        if (dayName == null) {
-            Toast.makeText(this, "Day name is null", Toast.LENGTH_SHORT).show();
-        }
 
         findViews();
         initViews();
@@ -66,12 +61,39 @@ public class DailyScheduleActivity extends AppCompatActivity {
         day_TIN_reservations = findViewById(R.id.day_TIN_reservations);
         day_TIN_notes = findViewById(R.id.day_TIN_notes);
         tv_day = findViewById(R.id.tv_day);
+        tv_trip = findViewById(R.id.tv_trip);
     }
 
     private void initViews() {
-        if (tripKey != null) {
-            tv_day.setText(dayName);
+        if (dayName != null) {
+            tv_day.setText(dayName.toUpperCase());
+            Toast.makeText(this, dayName, Toast.LENGTH_SHORT).show();
         }
+        if (tripKey != null) {
+            dataTripDestination=FirebaseDatabase.getInstance().getReference("Trips")
+                    .child(tripKey).child("tripDestination");
+
+            dataTripDestination.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        tripDestination = dataSnapshot.getValue(String.class);
+
+                        if (tripDestination != null) {
+                            tv_trip.setText(tripDestination.toUpperCase());
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    message("Failed to load data.");
+                }
+            });
+
+        }
+
     }
 
     private void setupFirebase() {
@@ -80,14 +102,15 @@ public class DailyScheduleActivity extends AppCompatActivity {
             databaseReference = FirebaseDatabase.getInstance().getReference("Trips")
                     .child(tripKey).child("allDays").child(dayName.toLowerCase());
             Log.d("SetupFirebase", "DataSnapshot received for tripKey: " + tripKey);
+
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d("LIOR", dayName );
-                    Log.d("LIOR3", tripKey );
+                    Log.d("dayName", dayName );
+                    Log.d("tripKey", tripKey );
 
                     if (dataSnapshot.exists()) {
-                        Log.d("LIOR2", tripKey );
+                        Log.d("tripKeyExists", tripKey );
                         // Extract data and update the views
                         String morningSchedule = dataSnapshot.child("morningSchedule").getValue(String.class);
                         String noonSchedule = dataSnapshot.child("noonSchedule").getValue(String.class);
@@ -136,10 +159,44 @@ public class DailyScheduleActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.item_done) {
-            message("Done");
+            saveDataToFirebase();
+            message("Data Saved");
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void saveDataToFirebase() {
+        String morningSchedule = day_TIN_morning.getText().toString().trim();
+        String noonSchedule = day_TIN_noon.getText().toString().trim();
+        String eveningSchedule = day_TIN_evening.getText().toString().trim();
+        String reservations = day_TIN_reservations.getText().toString().trim();
+        String notes = day_TIN_notes.getText().toString().trim();
+
+        if (tripKey != null && dayName != null) {
+            // Set up database reference to the specific day within the specific trip
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Trips")
+                    .child(tripKey).child("allDays").child(dayName.toLowerCase());
+
+            // Saving each value directly to Firebase
+            databaseReference.child("morningSchedule").setValue(morningSchedule);
+            databaseReference.child("noonSchedule").setValue(noonSchedule);
+            databaseReference.child("eveningSchedule").setValue(eveningSchedule);
+            databaseReference.child("reservations").setValue(reservations);
+            databaseReference.child("notes").setValue(notes)
+                    .addOnSuccessListener(aVoid -> {
+
+                        message("Daily schedule saved successfully");
+                    })
+                    .addOnFailureListener(e -> {
+                        message("Failed to save daily schedule");
+                        Log.e("FirebaseError", "Error saving daily schedule", e);
+                    });
+        } else {
+            Toast.makeText(this, "Trip key or day name is null", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     public void message(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
