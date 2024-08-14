@@ -87,8 +87,10 @@ public class HomeFragment extends Fragment {
         com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner);
         addButton.setOnClickListener(v -> {
             String tripId = "Trip " + nextTripNumber++;
-            addNewTrip(tripId);
-            saveDataToFirebase(tripId);
+           if(addNewTrip(tripId)) {
+               saveDataToFirebase(tripId);
+           }
+
         });
 
         return root;
@@ -125,9 +127,18 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void addNewTrip(String tripName) {
-        tripList.add(tripName);
-        tripAdapter.notifyItemInserted(tripList.size() - 1);
+    private boolean addNewTrip(String tripName) {
+        if (tripList.contains(tripName)) {
+            // If the trip name already exists in the list
+            Toast.makeText(getContext(), "'"+ tripName +"' already exists,Please change name", Toast.LENGTH_SHORT).show();
+            return false;
+
+        }
+            // If the trip name does not exist, add it to the list
+            tripList.add(tripName);
+            tripAdapter.notifyItemInserted(tripList.size() - 1);
+            Toast.makeText(getContext(), "Trip added successfully", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     private void saveDataToFirebase(String tripName) {
@@ -136,7 +147,7 @@ public class HomeFragment extends Fragment {
         myRefUnderTrips1.setValue(DataManager.createTripsWithDailySchedules())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(getContext(), "New trip added", Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(getContext(), "New trip added", Toast.LENGTH_SHORT).show();
                         myRef.child(tripName).child("tripDestination").setValue(tripName);
                     } else {
                         Toast.makeText(getContext(), "Failed to save data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();

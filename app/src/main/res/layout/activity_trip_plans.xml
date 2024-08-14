@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/light_blue_50"
+    android:background="@drawable/note_photo"
     tools:context=".TripPlansActivity"
     >
 
@@ -13,14 +13,15 @@
         android:id="@+id/tripTitleHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let’s Wander..."
+        android:text="   Let’s Wander..."
         android:textColor="@android:color/black"
         android:textSize="30sp"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="80dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:fontFamily="@font/pacifico"/>
 
     <!-- Trip Title Input -->
     <com.google.android.material.textfield.TextInputLayout
@@ -29,8 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_below="@id/tripTitleHeader"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+       >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/trip_Title_Input"
@@ -52,10 +54,11 @@
         android:text="Days"
         android:textColor="@android:color/black"
         android:textSize="30sp"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:layout_below="@id/tripTitleLayout"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="40dp"/>
+        android:layout_marginStart="45dp"
+        android:fontFamily="@font/pacifico"/>
 
     <!-- RecyclerView for Days -->
     <androidx.recyclerview.widget.RecyclerView
@@ -78,12 +81,13 @@
         android:text="Add Day"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:textSize="25sp"
+        android:textSize="30sp"
         android:backgroundTint="@color/pink_400"
         app:cornerRadius="50dp"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="125dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"/>
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/concertone"/>
 
 </RelativeLayout>

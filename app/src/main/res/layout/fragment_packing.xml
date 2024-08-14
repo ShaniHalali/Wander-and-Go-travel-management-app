@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/pack_folder2"
     tools:context=".ui.packingList.PackingListFragment">
 
     <LinearLayout
@@ -24,7 +25,11 @@
             android:id="@+id/button_add_packing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add" />
+            android:text="Add"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/_25sp"
+            android:fontFamily="@font/concertone"/>
     </LinearLayout>
 
     <ListView
