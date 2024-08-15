@@ -9,7 +9,7 @@
 
     <string name="menu_home">My Trips</string>
     <string name="menu_packing">Packing List</string>
-    <string name="menu_trip_planner">Trip Planner</string>
+    <string name="menu_profile">My Profile</string>
     <string name="default_user_name">User</string>
 
     <string name="location_button_description">Location Button</string>

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.tripPlanner;
+package com.example.myapplication.ui.myProfile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

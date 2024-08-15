@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.tripPlanner;
+package com.example.myapplication.ui.myProfile;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

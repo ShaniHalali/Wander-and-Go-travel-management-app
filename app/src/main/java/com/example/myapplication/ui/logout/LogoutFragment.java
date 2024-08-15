@@ -4,25 +4,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.databinding.FragmentHomeBinding;
-import com.example.myapplication.ui.home.HomeViewModel;
+import com.example.myapplication.databinding.FragmentMyTripsBinding;
+import com.example.myapplication.ui.myTrips.MyTripsViewModel;
 
 public class LogoutFragment  extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentMyTripsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        MyTripsViewModel homeViewModel =
+                new ViewModelProvider(this).get(MyTripsViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentMyTripsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
 

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.home;
+package com.example.myapplication.ui.myTrips;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HomeFragment extends Fragment {
+public class MyTripsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TripAdapter tripAdapter;
@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_my_trips, container, false);
 
         // Initialize RecyclerView and adapter
         recyclerView = root.findViewById(R.id.list_LST_trips);
