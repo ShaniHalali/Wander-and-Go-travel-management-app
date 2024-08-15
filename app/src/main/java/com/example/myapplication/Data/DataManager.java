@@ -1,13 +1,13 @@
 package com.example.myapplication.Data;
 
 import com.example.myapplication.Models.DailySchedule;
-import com.example.myapplication.Models.Trip;
+import com.example.myapplication.Models.Trips;
 
 public class DataManager {
     private static int tripCount=1;
 
-    public static Trip createTripsWithDailySchedules(){
-        Trip trip = new Trip();
+    public static Trips createTripsWithDailySchedules(){
+        Trips trip = new Trips();
 
         trip.getAllDays()
                 .put("day "+ tripCount,

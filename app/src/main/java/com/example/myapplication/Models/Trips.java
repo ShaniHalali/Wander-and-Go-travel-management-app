@@ -2,18 +2,18 @@ package com.example.myapplication.Models;
 
 import java.util.HashMap;
 
-public class Trip {
+public class Trips {
     private String TripDestination ="";
     private HashMap<String, DailySchedule> allDays = new HashMap<>();
 
-    public Trip() {
+    public Trips() {
     }
 
     public String getTripDestination() {
         return TripDestination;
     }
 
-    public Trip setTripDestination(String tripDestination) {
+    public Trips setTripDestination(String tripDestination) {
         this.TripDestination = tripDestination;
         return this;
     }
@@ -22,7 +22,7 @@ public class Trip {
         return allDays;
     }
 
-    public Trip setAllDays(HashMap<String, DailySchedule> allDays) {
+    public Trips setAllDays(HashMap<String, DailySchedule> allDays) {
         this.allDays = allDays;
         return this;
     }

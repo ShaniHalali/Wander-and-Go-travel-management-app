@@ -36,6 +36,7 @@ public class MyTripsFragment extends Fragment {
     private DatabaseReference myRef;
     private int nextTripNumber = 1; // Counter to track the next unique trip number
     private String tripName;
+    private DatabaseReference myusers;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -98,6 +99,7 @@ public class MyTripsFragment extends Fragment {
 
     private void fetchTripsFromFirebase() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myusers=database.getReference("Users");////////---------
         myRef = database.getReference("Trips");
 
         myRef.addValueEventListener(new ValueEventListener() {
