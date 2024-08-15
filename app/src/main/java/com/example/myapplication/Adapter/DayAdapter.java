@@ -58,7 +58,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
             if (onScheduleClickListener != null) {
                 // Create Intent to start DailyScheduleActivity
                 Intent intent = new Intent(context, DailyScheduleActivity.class);
-                intent.putExtra("DAY_NAME", day.toLowerCase()); // Pass the selected day name
+                intent.putExtra("DAY_NAME", day); // Pass the selected day name
                 intent.putExtra("TRIP",  tripID);
                 context.startActivity(intent);
             }

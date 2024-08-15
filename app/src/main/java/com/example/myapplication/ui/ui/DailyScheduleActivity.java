@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.Models.DailySchedule;
 import com.example.myapplication.R;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +32,7 @@ public class DailyScheduleActivity extends AppCompatActivity {
     private TextView tv_day;
     private TextView tv_trip;
     private String tripKey;
+    private String userId;
     private DatabaseReference databaseReference;
     private DatabaseReference dataTripDestination;
     private String tripDestination;
@@ -39,6 +41,9 @@ public class DailyScheduleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_schedule);
+
+        // Get current user's ID
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Get tripKey and dayName from intent
         tripKey = getIntent().getStringExtra("TRIP");
@@ -70,8 +75,8 @@ public class DailyScheduleActivity extends AppCompatActivity {
             Toast.makeText(this, dayName, Toast.LENGTH_SHORT).show();
         }
         if (tripKey != null) {
-            dataTripDestination=FirebaseDatabase.getInstance().getReference("Trips")
-                    .child(tripKey).child("tripDestination");
+            dataTripDestination = FirebaseDatabase.getInstance().getReference("users")
+                    .child(userId).child("Trips").child(tripKey).child("tripDestination");
 
             dataTripDestination.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -82,7 +87,6 @@ public class DailyScheduleActivity extends AppCompatActivity {
                         if (tripDestination != null) {
                             tv_trip.setText(tripDestination.toUpperCase());
                         }
-
                     }
                 }
 
@@ -98,19 +102,19 @@ public class DailyScheduleActivity extends AppCompatActivity {
 
     private void setupFirebase() {
         if (tripKey != null && dayName != null) {
-            // Set up database reference to the specific day within the specific trip
-            databaseReference = FirebaseDatabase.getInstance().getReference("Trips")
-                    .child(tripKey).child("allDays").child(dayName.toLowerCase());
+            // Set up database reference to the specific day within the specific trip for the current user
+            databaseReference = FirebaseDatabase.getInstance().getReference("users")
+                    .child(userId).child("Trips").child(tripKey).child("allDays").child(dayName);
             Log.d("SetupFirebase", "DataSnapshot received for tripKey: " + tripKey);
 
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d("dayName", dayName );
-                    Log.d("tripKey", tripKey );
+                    Log.d("dayName", dayName);
+                    Log.d("tripKey", tripKey);
 
                     if (dataSnapshot.exists()) {
-                        Log.d("tripKeyExists", tripKey );
+                        Log.d("tripKeyExists", tripKey);
                         // Extract data and update the views
                         String morningSchedule = dataSnapshot.child("morningSchedule").getValue(String.class);
                         String noonSchedule = dataSnapshot.child("noonSchedule").getValue(String.class);
@@ -119,7 +123,7 @@ public class DailyScheduleActivity extends AppCompatActivity {
                         String notes = dataSnapshot.child("notes").getValue(String.class);
 
                         if (morningSchedule != null) {
-                            Log.d("moriningggg", morningSchedule);
+                            Log.d("morning", morningSchedule);
                             day_TIN_morning.setText(morningSchedule);
                         }
                         if (noonSchedule != null) {
@@ -174,9 +178,9 @@ public class DailyScheduleActivity extends AppCompatActivity {
         String notes = day_TIN_notes.getText().toString().trim();
 
         if (tripKey != null && dayName != null) {
-            // Set up database reference to the specific day within the specific trip
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Trips")
-                    .child(tripKey).child("allDays").child(dayName.toLowerCase());
+            // Set up database reference to the specific day within the specific trip for the current user
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users")
+                    .child(userId).child("Trips").child(tripKey).child("allDays").child(dayName);
 
             // Saving each value directly to Firebase
             databaseReference.child("morningSchedule").setValue(morningSchedule);
@@ -185,7 +189,6 @@ public class DailyScheduleActivity extends AppCompatActivity {
             databaseReference.child("reservations").setValue(reservations);
             databaseReference.child("notes").setValue(notes)
                     .addOnSuccessListener(aVoid -> {
-
                         message("Daily schedule saved successfully");
                     })
                     .addOnFailureListener(e -> {
@@ -196,7 +199,6 @@ public class DailyScheduleActivity extends AppCompatActivity {
             Toast.makeText(this, "Trip key or day name is null", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     public void message(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();

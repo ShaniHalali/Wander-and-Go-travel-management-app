@@ -10,7 +10,7 @@ public class DataManager {
         Trips trip = new Trips();
 
         trip.getAllDays()
-                .put("day "+ tripCount,
+                .put("Day "+ tripCount,
                         new DailySchedule()
                                 .setDayTitle("Day "+ tripCount)
                                 .setDayNumber( getCurrentTripCount())

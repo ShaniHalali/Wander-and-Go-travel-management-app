@@ -16,6 +16,7 @@ import com.example.myapplication.Adapter.TripAdapter;
 import com.example.myapplication.Data.DataManager;
 import com.example.myapplication.TripPlansActivity;
 import com.example.myapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class MyTripsFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -34,8 +36,8 @@ public class MyTripsFragment extends Fragment {
     private List<String> tripList;
     private Map<String, String> tripIdToDestinationMap; // New map to store trip IDs and destinations
     private DatabaseReference myRef;
+    private String userID; // New variable to store userID
     private int nextTripNumber = 1; // Counter to track the next unique trip number
-    private String tripName;
     private DatabaseReference myusers;
 
     @Override
@@ -81,6 +83,9 @@ public class MyTripsFragment extends Fragment {
 
         recyclerView.setAdapter(tripAdapter);
 
+        // Get the current user's ID
+        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         // Fetch trips from Firebase
         fetchTripsFromFirebase();
 
@@ -88,10 +93,9 @@ public class MyTripsFragment extends Fragment {
         com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton addButton = root.findViewById(R.id.list_BTN_planner);
         addButton.setOnClickListener(v -> {
             String tripId = "Trip " + nextTripNumber++;
-           if(addNewTrip(tripId)) {
-               saveDataToFirebase(tripId);
-           }
-
+            if (addNewTrip(tripId)) {
+                saveDataToFirebase(tripId);
+            }
         });
 
         return root;
@@ -99,8 +103,7 @@ public class MyTripsFragment extends Fragment {
 
     private void fetchTripsFromFirebase() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myusers=database.getReference("Users");////////---------
-        myRef = database.getReference("Trips");
+        myRef = database.getReference("users").child(userID).child("Trips"); // Updated reference
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -132,14 +135,13 @@ public class MyTripsFragment extends Fragment {
     private boolean addNewTrip(String tripName) {
         if (tripList.contains(tripName)) {
             // If the trip name already exists in the list
-            Toast.makeText(getContext(), "'"+ tripName +"' already exists,Please change name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "'" + tripName + "' already exists, Please change name", Toast.LENGTH_SHORT).show();
             return false;
-
         }
-            // If the trip name does not exist, add it to the list
-            tripList.add(tripName);
-            tripAdapter.notifyItemInserted(tripList.size() - 1);
-            Toast.makeText(getContext(), "Trip added successfully", Toast.LENGTH_SHORT).show();
+        // If the trip name does not exist, add it to the list
+        tripList.add(tripName);
+        tripAdapter.notifyItemInserted(tripList.size() - 1);
+        Toast.makeText(getContext(), "Trip added successfully", Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -149,7 +151,7 @@ public class MyTripsFragment extends Fragment {
         myRefUnderTrips1.setValue(DataManager.createTripsWithDailySchedules())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                      //  Toast.makeText(getContext(), "New trip added", Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getContext(), "New trip added", Toast.LENGTH_SHORT).show();
                         myRef.child(tripName).child("tripDestination").setValue(tripName);
                     } else {
                         Toast.makeText(getContext(), "Failed to save data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();

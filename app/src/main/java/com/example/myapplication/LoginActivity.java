@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.Models.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
@@ -16,10 +17,14 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
-
 public class LoginActivity extends AppCompatActivity {
 
     // Register for the Firebase authentication result callback
@@ -44,9 +49,46 @@ public class LoginActivity extends AppCompatActivity {
             // If the user is not signed in, start the sign-in flow
             signIn();
         } else {
-            // If the user is already signed in, proceed to the main activity
-            transactToMainActivity();
+            // If the user is already signed in, check or add user data to Firebase
+            checkAndAddUserToDatabase(user);
         }
+    }
+
+    private void checkAndAddUserToDatabase(FirebaseUser user) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+
+        usersRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    // If the user does not exist, add them to the database
+                    User newUser = new User(user.getUid(), user.getDisplayName(), user.getEmail());
+                    usersRef.child(user.getUid()).setValue(newUser);
+
+                    // Add initial data for PackingItems and Trips
+                    DatabaseReference userRef = usersRef.child(user.getUid());
+                    addInitialData(userRef);
+                }
+                // Proceed to the main activity
+                transactToMainActivity();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle possible errors here
+            }
+        });
+    }
+
+    private void addInitialData(DatabaseReference userRef) {
+        // Adding initial PackingItems data
+        DatabaseReference packingItemsRef = userRef.child("PackingItems").child("allItems");
+
+
+        // Adding initial Trips data
+        DatabaseReference tripsRef = userRef.child("Trips");
+        DatabaseReference day1Ref = tripsRef.child("allDays");
+
     }
 
     private void transactToMainActivity() {
@@ -81,8 +123,8 @@ public class LoginActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 updateNavHeader(user);
+                checkAndAddUserToDatabase(user);
             }
-            transactToMainActivity();
         } else {
             // Sign in failed
             if (response == null) {

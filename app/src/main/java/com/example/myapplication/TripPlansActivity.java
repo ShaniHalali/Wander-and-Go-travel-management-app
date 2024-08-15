@@ -21,6 +21,8 @@ import com.example.myapplication.ui.ui.DailyScheduleActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -31,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 
 public class TripPlansActivity extends AppCompatActivity {
@@ -48,8 +49,7 @@ public class TripPlansActivity extends AppCompatActivity {
 
     private String tripDestination;
     private DatabaseReference tripDestinationRef;
-    private String id;
-
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,24 +58,27 @@ public class TripPlansActivity extends AppCompatActivity {
 
         // Get the tripID from the intent
         tripID = getIntent().getStringExtra("Trips");
-        //id=tripID;
         Log.d("trips1", tripID);
-        findViews();
-        Log.d("trips2", tripID);
-        initViews();
-        Log.d("trips3", tripID);
 
+        // Initialize views and UI components
+        findViews();
+        initViews();
+
+        // Get user ID from Firebase authentication
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userID = user.getUid();
+        }
 
         // Initialize the list and adapter for the days
         daysList = new ArrayList<>();
-        dayAdapter = new DayAdapter(this, daysList, tripID, this::removeDayFromFirebase, (day)  -> {
+        dayAdapter = new DayAdapter(this, daysList, tripID, this::removeDayFromFirebase, (day) -> {
             // Handle the daily schedule button click event
             Intent scheduleIntent = new Intent(this, DailyScheduleActivity.class);
             Log.d("trips4", tripID);
-            scheduleIntent.putExtra("DAY_NAME", day.toLowerCase());
-            scheduleIntent.putExtra("TRIP",tripID);
+            scheduleIntent.putExtra("DAY_NAME", day);
+            scheduleIntent.putExtra("TRIP", tripID);
             startActivity(scheduleIntent);
-
         });
 
         trip_LST_days.setLayoutManager(new LinearLayoutManager(this));
@@ -85,25 +88,29 @@ public class TripPlansActivity extends AppCompatActivity {
         MaterialButton addDayButton = findViewById(R.id.addDayButton);
         addDayButton.setOnClickListener(v -> addNewDay());
 
-        // Fetch days from Firebase
+        // Fetch days and trip destination from Firebase
         fetchDaysFromFirebase();
     }
 
     private void initViews() {
+        // Set the trip destination to the input field
         trip_Title_Input.setText(tripDestination);
     }
 
     private void findViews() {
+        // Link the XML components to Java objects
         trip_Title_Input = findViewById(R.id.trip_Title_Input);
         trip_LST_days = findViewById(R.id.trip_LST_days);
         day_BTN_dayEdit = findViewById(R.id.day_BTN_dayEdit);
     }
-    private void fetchDaysFromFirebase() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        tripRef = database.getReference("Trips").child(tripID).child("allDays");
-        tripDestinationRef = database.getReference("Trips").child(tripID).child("tripDestination");
 
-        // Fetch the tripDestination value
+    private void fetchDaysFromFirebase() {
+        // Initialize Firebase references
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        tripRef = database.getReference("users").child(userID).child("Trips").child(tripID).child("allDays");
+        tripDestinationRef = database.getReference("users").child(userID).child("Trips").child(tripID).child("tripDestination");
+
+        // Fetch the tripDestination value from Firebase
         tripDestinationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -119,6 +126,7 @@ public class TripPlansActivity extends AppCompatActivity {
             }
         });
 
+        // Fetch the days associated with the trip from Firebase
         tripRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -143,7 +151,6 @@ public class TripPlansActivity extends AppCompatActivity {
         });
     }
 
-
     private void addNewDay() {
         // Generate the new day title
         newDayTitle = "Day " + (daysList.size() + 1);
@@ -153,6 +160,7 @@ public class TripPlansActivity extends AppCompatActivity {
             count++;
         }
 
+        // Create a new daily schedule object
         newDaySchedule = DataManager.NewDailyDay(newDayTitle);
 
         // Save the new day to Firebase
@@ -171,12 +179,13 @@ public class TripPlansActivity extends AppCompatActivity {
     }
 
     private void removeDayFromFirebase(int position) {
+        // Remove a day from Firebase and update the list
         if (position >= 0 && position < daysList.size()) {
             String dayToRemove = daysList.get(position);
             tripRef.child(dayToRemove).removeValue()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            // Instead of removing directly from the list, fetch days again
+                            // Fetch days again to update the list
                             fetchDaysFromFirebase();
                             Toast.makeText(getApplicationContext(), "Day removed successfully", Toast.LENGTH_SHORT).show();
                         } else {
@@ -188,12 +197,14 @@ public class TripPlansActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.top_app_bar, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle action bar item clicks here.
         int id = item.getItemId();
         if (id == R.id.item_done) {
             // Get the new trip destination from the input field
@@ -201,7 +212,7 @@ public class TripPlansActivity extends AppCompatActivity {
 
             if (!newTripDestination.isEmpty()) {
                 // Update Firebase Database with the new trip destination
-                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Trips").child(tripID);
+                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("Trips").child(tripID);
 
                 // Update the tripDestination field
                 databaseRef.child("tripDestination").setValue(newTripDestination)
@@ -224,6 +235,7 @@ public class TripPlansActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Utility method for showing toast messages
     public void message(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }

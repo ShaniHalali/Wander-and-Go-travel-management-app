@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.Models.PackingItems;
 import com.example.myapplication.databinding.FragmentPackingBinding;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +32,7 @@ public class PackingListFragment extends Fragment {
     private ArrayList<String> packingList;
     private ArrayAdapter<String> adapter;
     private DatabaseReference databaseReference;
+    private String userId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,8 +43,12 @@ public class PackingListFragment extends Fragment {
         binding = FragmentPackingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Get current user's ID
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         // Initialize Firebase Database
-        databaseReference = FirebaseDatabase.getInstance().getReference("PackingItems");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users")
+                .child(userId).child("PackingItems");
 
         // Initialize packing list and adapter
         packingList = new ArrayList<>();
