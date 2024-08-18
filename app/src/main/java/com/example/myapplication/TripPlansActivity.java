@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import static com.example.myapplication.Data.DataManager.NewDailyDay;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.Adapter.DayAdapter;
 import com.example.myapplication.Data.DataManager;
 import com.example.myapplication.Models.DailySchedule;
-import com.example.myapplication.ui.ui.DailyScheduleActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -30,9 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class TripPlansActivity extends AppCompatActivity {

@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_my_trips">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_my_trips"
         android:name="com.example.myapplication.ui.myTrips.MyTripsFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_my_trips" />
@@ -18,8 +18,13 @@
         tools:layout="@layout/fragment_packing" />
 
     <fragment
-        android:id="@+id/nav_ptofile"
-        android:name="com.example.myapplication.ui.myProfile.TripPlannerFragment"
+        android:id="@+id/nav_my_flights"
+        android:name="com.example.myapplication.ui.flight.FlightFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_trip_planner" />
+        tools:layout="@layout/fragment_flight" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.example.myapplication.ui.profile.ProfileFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:focusableInTouchMode="true"
     android:background="@drawable/lines"
-    tools:context=".ui.ui.DailyScheduleActivity"
+    tools:context=".DailyScheduleActivity"
     >
 
     <LinearLayout

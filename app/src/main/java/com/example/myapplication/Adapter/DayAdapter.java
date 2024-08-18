@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.ui.ui.DailyScheduleActivity;
+import com.example.myapplication.DailyScheduleActivity;
 
 import java.util.List;
 

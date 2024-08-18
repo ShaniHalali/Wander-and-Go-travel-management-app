@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.example.myapplication.Models.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
@@ -62,12 +63,22 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
                     // If the user does not exist, add them to the database
-                    User newUser = new User(user.getUid(), user.getDisplayName(), user.getEmail());
+                    User newUser = new User(user.getUid(), user.getDisplayName(), user.getEmail(),user.getPhoneNumber());
                     usersRef.child(user.getUid()).setValue(newUser);
 
                     // Add initial data for PackingItems and Trips
                     DatabaseReference userRef = usersRef.child(user.getUid());
                     addInitialData(userRef);
+
+                    // If the phone number exists, add it under the userKey
+                    if (user.getPhoneNumber()!= null && !user.getPhoneNumber().isEmpty()) {
+                        usersRef.child(user.getUid()).child("PhoneNumber").setValue(user.getPhoneNumber());
+                    }
+
+                    if (user.getDisplayName()!= null && !user.getPhoneNumber().isEmpty()) {
+                        usersRef.child(user.getUid()).child("PhoneNumber").setValue(user.getPhoneNumber());
+                    }
+
                 }
                 // Proceed to the main activity
                 transactToMainActivity();

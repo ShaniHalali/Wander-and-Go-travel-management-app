@@ -5,13 +5,17 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_ptofile"
-            android:icon="@drawable/travel_explore"
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/person"
             android:title="@string/menu_profile" />
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_my_trips"
             android:icon="@drawable/app_logo"
             android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_my_flights"
+            android:icon="@drawable/travel_explore"
+            android:title="My Flights" />
         <item
             android:id="@+id/nav_packing"
             android:icon="@drawable/fact_check"
