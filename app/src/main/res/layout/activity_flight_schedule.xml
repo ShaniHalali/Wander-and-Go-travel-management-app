@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue_50"
+    android:background="@drawable/planesky_back"
     tools:context=".ui.flight.FlightScheduleActivity"
    >
 
@@ -18,13 +18,36 @@
             android:id="@+id/flight_tv_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save flight details"
-            android:textSize="50sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/caveat"
-            android:textStyle="bold"
             android:layout_gravity="center_horizontal"
-            android:paddingBottom="16dp"/>
+            android:fontFamily="@font/caveat"
+            android:paddingBottom="16dp"
+            android:text="Save flight details"
+            android:textColor="@color/black"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
+        <!-- Trip Title Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/flightTitleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/tripTitleHeader"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/flight_Title_Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="if you like to change the flight title"
+                android:background="@color/white"
+                android:textSize="15sp"
+                android:textColorHint="@color/black"
+                android:inputType="textMultiLine" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,6 +56,7 @@
             android:fontFamily="@font/concertone"
             android:textColor="@color/black"
             android:textSize="25sp"
+            android:layout_marginTop="20dp"
             android:paddingBottom="8dp"/>
 
         <EditText
@@ -51,6 +75,7 @@
             android:fontFamily="@font/concertone"
             android:textColor="@color/black"
             android:textSize="25sp"
+            android:layout_marginTop="15dp"
             android:paddingBottom="8dp"/>
 
         <Button
@@ -59,6 +84,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Select Departure Date"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/pink_400"
             android:textColor="@android:color/white"/>
@@ -71,6 +97,7 @@
             android:fontFamily="@font/concertone"
             android:textColor="@color/black"
             android:textSize="25sp"
+            android:layout_marginTop="15dp"
             android:paddingBottom="8dp"/>
 
         <Button
@@ -79,6 +106,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Select Departure Time"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/pink_400"
             android:textColor="@android:color/white"/>
@@ -91,6 +119,7 @@
             android:fontFamily="@font/concertone"
             android:textColor="@color/black"
             android:textSize="25sp"
+            android:layout_marginTop="15dp"
             android:paddingBottom="8dp"/>
 
         <EditText
@@ -109,6 +138,7 @@
             android:fontFamily="@font/concertone"
             android:textColor="@color/black"
             android:textSize="25sp"
+            android:layout_marginTop="15dp"
             android:paddingBottom="8dp"/>
 
         <Button
@@ -119,6 +149,7 @@
             android:text="Select Arrival Date"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/pink_400"
+            android:layout_marginTop="10dp"
             android:textColor="@android:color/white"/>
 
         <TextView
@@ -128,6 +159,7 @@
             android:paddingTop="16dp"
             android:fontFamily="@font/concertone"
             android:textColor="@color/black"
+            android:layout_marginTop="15dp"
             android:textSize="25sp"
             android:paddingBottom="8dp"/>
 
@@ -137,6 +169,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Select Arrival Time"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/pink_400"
             android:textColor="@android:color/white"/>

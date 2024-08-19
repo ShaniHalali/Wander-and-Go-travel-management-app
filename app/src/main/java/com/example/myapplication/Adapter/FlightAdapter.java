@@ -76,7 +76,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         }
 
         public void bind(Flight flight) {
-            flightLabelName.setText(flight.getFlightDescription()); // Bind the flight description
+            flightLabelName.setText(flight.getFlightTitle()); // Bind the flight title instead of description
         }
     }
 }

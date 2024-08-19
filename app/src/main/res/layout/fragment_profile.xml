@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/light_blue_50"
+    android:background="@drawable/sun_plane"
     tools:context=".ui.profile.ProfileFragment">
 
     <!-- Profile Image -->

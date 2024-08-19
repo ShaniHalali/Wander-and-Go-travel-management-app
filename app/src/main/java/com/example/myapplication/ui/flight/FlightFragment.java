@@ -64,7 +64,7 @@ public class FlightFragment extends Fragment {
     }
 
     private void loadFlights() {
-        allFlightsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        allFlightsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 flightList.clear(); // Clear the existing list
@@ -83,6 +83,7 @@ public class FlightFragment extends Fragment {
             }
         });
     }
+
 
 
 

@@ -23,12 +23,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.Locale;
+
 public class FlightScheduleActivity extends AppCompatActivity {
     private String userId;
     private String flightID;
     private DatabaseReference flightReference;
 
-    private EditText etDepartureAirport, etArrivalAirport;
+    private EditText etDepartureAirport, etArrivalAirport, etFlightTitle;
     private Button btnDepartureDate, btnDepartureTime, btnArrivalDate, btnArrivalTime;
 
     private Calendar departureCalendar; // Keep track of the selected departure date
@@ -49,6 +50,7 @@ public class FlightScheduleActivity extends AppCompatActivity {
         // Initialize views
         etDepartureAirport = findViewById(R.id.et_departure_airport);
         etArrivalAirport = findViewById(R.id.et_arrival_airport);
+        etFlightTitle = findViewById(R.id.flight_Title_Input); // Added for flight title
         btnDepartureDate = findViewById(R.id.btn_departure_date);
         btnDepartureTime = findViewById(R.id.btn_departure_time);
         btnArrivalDate = findViewById(R.id.btn_arrival_date);
@@ -85,10 +87,13 @@ public class FlightScheduleActivity extends AppCompatActivity {
                     String departureTime = snapshot.child("departureTime").getValue(String.class);
                     String arrivalDate = snapshot.child("arrivalDate").getValue(String.class);
                     String arrivalTime = snapshot.child("arrivalTime").getValue(String.class);
+                    String flightTitle = snapshot.child("flightTitle").getValue(String.class); // Added for flight title
 
                     // Update the UI fields
                     etDepartureAirport.setText(departureAirport);
                     etArrivalAirport.setText(arrivalAirport);
+                    etFlightTitle.setText(flightTitle); // Set flight title in EditText
+
                     btnDepartureDate.setText(TextUtils.isEmpty(departureDate) ? "Select Departure Date" : departureDate);
                     btnDepartureTime.setText(TextUtils.isEmpty(departureTime) ? "Select Departure Time" : departureTime);
                     btnArrivalDate.setText(TextUtils.isEmpty(arrivalDate) ? "Select Arrival Date" : arrivalDate);
@@ -113,6 +118,12 @@ public class FlightScheduleActivity extends AppCompatActivity {
         etArrivalAirport.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 updatedArrivalAirport = etArrivalAirport.getText().toString().trim();
+            }
+        });
+
+        etFlightTitle.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                // Nothing specific to do here since the title will be updated in saveAllDetailsToFirebase
             }
         });
 
@@ -219,6 +230,7 @@ public class FlightScheduleActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.item_done) {
             saveAllDetailsToFirebase();
+            message("Data Saved");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -234,7 +246,7 @@ public class FlightScheduleActivity extends AppCompatActivity {
         // Collect and validate user input
         updatedDepartureAirport = etDepartureAirport.getText().toString().trim();
         updatedArrivalAirport = etArrivalAirport.getText().toString().trim();
-
+        String updatedFlightTitle = etFlightTitle.getText().toString().trim(); // Get flight title input
 
         // Update Firebase with local values
         flightReference.child("departureAirport").setValue(updatedDepartureAirport)
@@ -274,7 +286,16 @@ public class FlightScheduleActivity extends AppCompatActivity {
                         Toast.makeText(FlightScheduleActivity.this, "Failed to update arrival time", Toast.LENGTH_SHORT).show();
                     });
         }
+
+        if (!updatedFlightTitle.isEmpty()) {
+            flightReference.child("flightTitle").setValue(updatedFlightTitle)
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(FlightScheduleActivity.this, "Failed to update flight title", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
+    public void message(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 
-
+    }
 }

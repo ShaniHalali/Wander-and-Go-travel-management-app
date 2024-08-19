@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/nav_my_flights"
         android:name="com.example.myapplication.ui.flight.FlightFragment"
-        android:label="@string/menu_profile"
+        android:label="My Flights"
         tools:layout="@layout/fragment_flight" />
     <fragment
         android:id="@+id/nav_profile"
