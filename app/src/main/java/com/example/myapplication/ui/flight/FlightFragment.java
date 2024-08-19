@@ -1,242 +1,201 @@
 package com.example.myapplication.ui.flight;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.pdf.PdfRenderer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.myapplication.Adapter.FlightAdapter;
+import com.example.myapplication.Models.Flight;
+import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentFlightBinding;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Calendar;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FlightFragment extends Fragment {
 
-    private static final int PICK_FILE_REQUEST = 1;
-
     private FragmentFlightBinding binding;
-    private Calendar departureCalendar;
-    private Calendar calendar;
-    private Cursor cursor;
+    private RecyclerView recyclerView;
+    private FlightAdapter adapter;
+    private ArrayList<Flight> flightList = new ArrayList<>();
+    private DatabaseReference allFlightsReference;
+    private String userID;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        FlightViewModel myPassportViewModel =
-                new ViewModelProvider(this).get(FlightViewModel.class);
-
-        // Inflate the layout using the correct binding
         binding = FragmentFlightBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Initialize departureCalendar
-        departureCalendar = Calendar.getInstance();
+        // Get the current user's ID
+        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Set up listeners or any other logic you need
-        setupListeners();
+        // Initialize RecyclerView and adapter
+        recyclerView = root.findViewById(R.id.list_LST_flights);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        adapter = new FlightAdapter(flightList, this::onFlightLongClick, this::onFlightEditClick);
+        recyclerView.setAdapter(adapter);
+
+        allFlightsReference = FirebaseDatabase.getInstance().getReference("users").child(userID).child("allFlights");
+
+        // Load existing flights from Firebase
+        loadFlights();
+
+        binding.listBTNPlanner.setOnClickListener(v -> addNewFlight());
 
         return root;
     }
 
-    private void setupListeners() {
-        // Handle departure date selection
-        binding.btnDepartureDate.setOnClickListener(v -> showDatePickerDialog(departureCalendar, (date, calendar) -> {
-            binding.btnDepartureDate.setText(date);
-            departureCalendar = calendar; // Save the selected departure date
-            Toast.makeText(getContext(), "Departure Date: " + date, Toast.LENGTH_SHORT).show();
-        }));
-
-        // Handle arrival date selection
-        binding.btnArrivalDate.setOnClickListener(v -> showDatePickerDialog(departureCalendar, (date, calendar) -> {
-            binding.btnArrivalDate.setText(date);
-            Toast.makeText(getContext(), "Arrival Date: " + date, Toast.LENGTH_SHORT).show();
-        }));
-
-        // Handle departure time selection
-        binding.btnDepartureTime.setOnClickListener(v -> showTimePickerDialog(departureCalendar, (time) -> {
-            binding.btnDepartureTime.setText(time);
-            Toast.makeText(getContext(), "Departure Time: " + time, Toast.LENGTH_SHORT).show();
-        }));
-
-        // Handle arrival time selection
-        binding.btnArrivalTime.setOnClickListener(v -> showTimePickerDialog(departureCalendar, (time) -> {
-            binding.btnArrivalTime.setText(time);
-            Toast.makeText(getContext(), "Arrival Time: " + time, Toast.LENGTH_SHORT).show();
-        }));
-
-        // Handle ticket upload
-        binding.btnUploadTicket.setOnClickListener(v -> openFilePicker());
-    }
-
-    private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("*/*"); // Allow any file type. You can specify "application/pdf" or "image/*" to restrict to specific types
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, PICK_FILE_REQUEST);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_FILE_REQUEST && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                Uri fileUri = data.getData();
-
-                // Display the file (e.g., image, PDF)
-                displaySelectedFile(fileUri);
-            }
-        }
-    }
-
-    private void displaySelectedFile(Uri fileUri) {
-        String mimeType = getContext().getContentResolver().getType(fileUri);
-
-        if (mimeType != null && mimeType.startsWith("image/")) {
-            // Load image into ImageView
-            binding.ticketImage.setImageURI(fileUri);
-            binding.ticketImage.setVisibility(View.VISIBLE);
-            binding.ticketText.setVisibility(View.GONE);
-        } else if (mimeType != null && mimeType.equals("application/pdf")) {
-            // Render PDF to Bitmap and display in ImageView
-            try {
-                File pdfFile = new File(getContext().getCacheDir(), "temp.pdf");
-                try (InputStream inputStream = getContext().getContentResolver().openInputStream(fileUri);
-                     OutputStream outputStream = new FileOutputStream(pdfFile)) {
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = inputStream.read(buffer)) > 0) {
-                        outputStream.write(buffer, 0, length);
+    private void loadFlights() {
+        allFlightsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                flightList.clear(); // Clear the existing list
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Flight flight = snapshot.getValue(Flight.class);
+                    if (flight != null) {
+                        flightList.add(flight);
                     }
                 }
-
-                ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY);
-                PdfRenderer pdfRenderer = new PdfRenderer(parcelFileDescriptor);
-
-                if (pdfRenderer.getPageCount() > 0) {
-                    PdfRenderer.Page page = pdfRenderer.openPage(0);
-                    Bitmap bitmap = Bitmap.createBitmap(page.getWidth(), page.getHeight(), Bitmap.Config.ARGB_8888);
-                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-                    binding.ticketImage.setImageBitmap(bitmap);
-                    binding.ticketImage.setVisibility(View.VISIBLE);
-                    binding.ticketText.setVisibility(View.GONE);
-                    page.close();
-                }
-
-                pdfRenderer.close();
-                parcelFileDescriptor.close();
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Failed to display PDF", Toast.LENGTH_SHORT).show();
+                adapter.notifyDataSetChanged(); // Notify adapter of data changes
             }
-        } else {
-            // Display file name in TextView
-            String fileName = getFileName(fileUri);
-            binding.ticketText.setText(fileName);
-            binding.ticketText.setVisibility(View.VISIBLE);
-            binding.ticketImage.setVisibility(View.GONE);
-        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getContext(), "Failed to load flights", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private String getFileName(Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            try (Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    if (nameIndex >= 0) { // Check if the column index is valid
-                        result = cursor.getString(nameIndex);
+
+
+    private void addNewFlight() {
+        generateUniqueFlightDescription(description -> {
+            allFlightsReference.child(description).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if (task.getResult().exists()) {
+                        // If flight with this description already exists, do not add it
+                        Toast.makeText(getContext(), "Flight already exists", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Create a new flight with dummy values
+                        Flight newFlight = new Flight(
+                                description,
+                                "",
+                                "",
+                                "00:00",
+                                "",
+                                "",
+                                "",
+                                "00:00",
+                                description // Use description for flightDescription field
+                        );
+
+                        // Add to Firebase with description as the key
+                        Map<String, Object> flightMap = new HashMap<>();
+                        flightMap.put("flightTitle", newFlight.getFlightTitle());
+                        flightMap.put("flightNumber", newFlight.getFlightNumber());
+                        flightMap.put("departureAirport", newFlight.getDepartureAirport());
+                        flightMap.put("departureTime", newFlight.getDepartureTime());
+                        flightMap.put("departureDate", newFlight.getDepartureDate());
+                        flightMap.put("arrivalDate", newFlight.getArrivalDate());
+                        flightMap.put("arrivalAirport", newFlight.getArrivalAirport());
+                        flightMap.put("arrivalTime", newFlight.getArrivalTime());
+                        flightMap.put("flightDescription", newFlight.getFlightDescription()); // Add description to the map
+
+                        allFlightsReference.child(description).setValue(flightMap)
+                                .addOnSuccessListener(aVoid -> {
+                                    loadFlights(); // Reload flights from Firebase to ensure consistency
+
+                                    Intent intent = new Intent(getContext(), FlightScheduleActivity.class);
+                                    intent.putExtra("FLIGHT_ID", description);
+                                    intent.putExtra("FLIGHT_DESCRIPTION", newFlight.getFlightDescription());
+                                    startActivity(intent);
+
+                                    Toast.makeText(getContext(), "New flight added!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to add flight", Toast.LENGTH_SHORT).show());
                     }
                 }
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
+            });
+        });
     }
 
-    private void showDatePickerDialog(Calendar minDate, OnDateSelectedListener listener) {
-        // Get current date if minDate is not provided
-        calendar = Calendar.getInstance();
 
-        if (minDate != null && minDate.after(calendar)) {
-            calendar = minDate;
-        }
+    private void generateUniqueFlightDescription(OnUniqueDescriptionGeneratedListener listener) {
+        allFlightsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int counter = 1;
+                String baseDescription = "Flight ";
+                String uniqueDescription;
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                // Check for existing flight descriptions and increment counter until unique
+                do {
+                    uniqueDescription = baseDescription + counter;
+                    counter++;
+                } while (dataSnapshot.child(uniqueDescription).exists());
 
-        // Create DatePickerDialog
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                getContext(),
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Update the calendar with the selected date
-                    calendar.set(selectedYear, selectedMonth, selectedDay);
+                listener.onUniqueDescriptionGenerated(uniqueDescription);
+            }
 
-                    // Format the selected date
-                    String formattedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    listener.onDateSelected(formattedDate, calendar);
-                },
-                year, month, day);
-
-        // Set the minimum selectable date to the provided minDate or the current date
-        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-
-        // Show the DatePickerDialog
-        datePickerDialog.show();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getContext(), "Failed to check existing flights", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void showTimePickerDialog(Calendar calendar, OnTimeSelectedListener listener) {
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+    // Interface for generating unique flight description
+    private interface OnUniqueDescriptionGeneratedListener {
+        void onUniqueDescriptionGenerated(String uniqueDescription);
+    }
 
-        // Create TimePickerDialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                getContext(),
-                (view, selectedHour, selectedMinute) -> {
-                    // Format the selected time
-                    String formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute);
-                    listener.onTimeSelected(formattedTime);
-                },
-                hour, minute, true);
+    private void onFlightLongClick(int position) {
+        Flight flight = flightList.get(position);
+        String flightDescription = flight.getFlightDescription();
 
-        // Show the TimePickerDialog
-        timePickerDialog.show();
+        // Remove from RecyclerView
+        flightList.remove(position);
+        adapter.notifyItemRemoved(position);
+
+        // Remove from Firebase
+        allFlightsReference.child(flightDescription).removeValue()
+                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Flight deleted", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to delete flight", Toast.LENGTH_SHORT).show());
+    }
+
+    private void onFlightEditClick(int position) {
+        Flight flight = flightList.get(position);
+        String flightID = flight.getFlightDescription();
+        String flightDescription = flight.getFlightDescription();
+
+        // Start FlightScheduleActivity and pass the FlightID and FlightDescription
+        Intent intent = new Intent(getContext(), FlightScheduleActivity.class);
+        intent.putExtra("FLIGHT_ID", flightID);
+        intent.putExtra("FLIGHT_DESCRIPTION", flightDescription);
+        startActivity(intent);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null; // Clean up the binding object to prevent memory leaks
-    }
-
-    // Interface to handle date selection
-    private interface OnDateSelectedListener {
-        void onDateSelected(String date, Calendar calendar);
-    }
-
-    // Interface to handle time selection
-    private interface OnTimeSelectedListener {
-        void onTimeSelected(String time);
+        binding = null;
     }
 }

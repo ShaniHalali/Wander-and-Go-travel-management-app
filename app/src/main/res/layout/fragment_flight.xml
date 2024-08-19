@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/sky_pint"
+    tools:context=".ui.flight.FlightFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_LST_flights"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/horizontal_flights_item" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/list_BTN_planner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/blue_sky"
+        app:icon="@drawable/add_circle_outline"
+        app:iconSize="50dp"
+        android:contentDescription="@string/location_button_description" />
+
+</RelativeLayout>

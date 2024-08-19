@@ -1,115 +1,105 @@
 package com.example.myapplication.Models;
-
 public class Flight {
+    private String flightTitle;
     private String flightNumber;
-    public enum Airline{
-        ELAL,
-        ARKIA,
-        ISRAIR,
-        BRITISHAIRWAYS,
-        AMERICANAIRLINES,
-
-    }
-    public enum BaggageAllowance{
-        CarryOnBag,
-        StandardCheckedBag,
-        PersonalItem,
-
-    }
-    private String departureLocation="";
-    private String arrivalLocation="";
-    private String departureTime="";
-    private String ArrivalTime="";
-    private Airline airline=Airline.ELAL;
-    private BaggageAllowance baggage=BaggageAllowance.CarryOnBag;
-    private Boolean isDelayed =Boolean.FALSE;
+    private String departureAirport;
+    private String departureTime;
+    private String departureDate;
+    private String arrivalDate;
+    private String arrivalAirport;
+    private String arrivalTime;
+    private String flightDescription; // New field
 
     public Flight() {
+        // Default constructor required for Firebase
+    }
+
+    public Flight(String flightTitle, String flightNumber, String departureAirport,
+                  String departureTime, String departureDate, String arrivalDate,
+                  String arrivalAirport, String arrivalTime, String flightDescription) {
+        this.flightTitle = flightTitle;
+        this.flightNumber = flightNumber;
+        this.departureAirport = departureAirport;
+        this.departureTime = departureTime;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
+        this.arrivalAirport = arrivalAirport;
+        this.arrivalTime = arrivalTime;
+        this.flightDescription = flightDescription; // Initialize new field
+    }
+
+    // Getters and setters for all fields
+
+    public String getFlightTitle() {
+        return flightTitle;
+    }
+
+    public void setFlightTitle(String flightTitle) {
+        this.flightTitle = flightTitle;
     }
 
     public String getFlightNumber() {
         return flightNumber;
     }
 
-    public Flight setFlightNumber(String flightNumber) {
+    public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
-        return this;
     }
 
-    public String getDepartureLocation() {
-        return departureLocation;
+    public String getDepartureAirport() {
+        return departureAirport;
     }
 
-    public Flight setDepartureLocation(String departureLocation) {
-        this.departureLocation = departureLocation;
-        return this;
-    }
-
-    public String getArrivalLocation() {
-        return arrivalLocation;
-    }
-
-    public Flight setArrivalLocation(String arrivalLocation) {
-        this.arrivalLocation = arrivalLocation;
-        return this;
+    public void setDepartureAirport(String departureAirport) {
+        this.departureAirport = departureAirport;
     }
 
     public String getDepartureTime() {
         return departureTime;
     }
 
-    public Flight setDepartureTime(String departureTime) {
+    public void setDepartureTime(String departureTime) {
         this.departureTime = departureTime;
-        return this;
+    }
+
+    public String getDepartureDate() {
+        return departureDate;
+    }
+
+    public void setDepartureDate(String departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public String getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(String arrivalDate) {
+        this.arrivalDate = arrivalDate;
+    }
+
+    public String getArrivalAirport() {
+        return arrivalAirport;
+    }
+
+    public void setArrivalAirport(String arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
     }
 
     public String getArrivalTime() {
-        return ArrivalTime;
+        return arrivalTime;
     }
 
-    public Flight setArrivalTime(String arrivalTime) {
-        ArrivalTime = arrivalTime;
-        return this;
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
-    public Airline getAirline() {
-        return airline;
+    public String getFlightDescription() {
+        return flightDescription;
     }
 
-    public Flight setAirline(Airline airline) {
-        this.airline = airline;
-        return this;
-    }
-
-    public BaggageAllowance getBaggage() {
-        return baggage;
-    }
-
-    public Flight setBaggage(BaggageAllowance baggage) {
-        this.baggage = baggage;
-        return this;
-    }
-
-    public Boolean getDelayed() {
-        return isDelayed;
-    }
-
-    public Flight setDelayed(Boolean delayed) {
-        isDelayed = delayed;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "Flight{" +
-                "flightNumber='" + flightNumber + '\'' +
-                ", departureLocation='" + departureLocation + '\'' +
-                ", arrivalLocation='" + arrivalLocation + '\'' +
-                ", departureTime='" + departureTime + '\'' +
-                ", ArrivalTime='" + ArrivalTime + '\'' +
-                ", airline=" + airline +
-                ", baggage=" + baggage +
-                ", isDelayed=" + isDelayed +
-                '}';
+    public void setFlightDescription(String flightDescription) {
+        this.flightDescription = flightDescription;
     }
 }
+
