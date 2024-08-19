@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    finish();  // Finish the current activity so user can't go back to it
+                    finish();  // Finish the current activity so user can't go back to it.
                     return true;
                 }
 
