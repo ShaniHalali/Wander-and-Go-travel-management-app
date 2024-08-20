@@ -4,6 +4,9 @@ programmed in JAVA in Android Studio.
 
 This is the final assigment project for Android Application Development course, in Afeka - the academic college of Engineering in Tel Aviv.
 
+**My presentation :**
+[Wander-and-Go.pptx](https://github.com/user-attachments/files/16674527/Wander-and-Go.pptx)
+
 Welcome to Wander & Go – your ultimate travel companion app designed to help you organize and plan your all trips and flights with ease. Whether you're an adventurer, a business traveler, or a family vacationer, this app is tailored to ensure your travel experience is smooth, organized, and enjoyable.
 
 # Overview
@@ -40,6 +43,20 @@ Ready to start your journey? Download Wander & Go today and take the first step 
 **Pre-Menu Animation:**
 
 <img src="https://github.com/user-attachments/assets/c022289f-bc4d-462c-8529-15e8b6f886b0" alt="WelcomePage" width="20%" height="20%">
+
+**User Profile:**
+
+*Login by phone number / login by Gmail :*
+
+<img src="https://github.com/user-attachments/assets/c692b189-2081-41bb-ab7c-6217099442a0" alt="WelcomePage" width="20%" height="20%">
+
+<img src="https://github.com/user-attachments/assets/eff96838-9e4d-489f-9ee2-e7eaf575ee88" alt="WelcomePage" width="20%" height="20%">
+
+*show passport button displays an document OR image :* 
+
+<img src="https://github.com/user-attachments/assets/01868ed9-3744-45a8-9625-152117a3b25b" alt="WelcomePage" width="20%" height="20%">
+
+<img src="https://github.com/user-attachments/assets/d0bad8d8-a1ec-46b7-9729-338327e4855e" alt="WelcomePage" width="20%" height="20%">
 
 **Drawer Navigation Menu:**
 
