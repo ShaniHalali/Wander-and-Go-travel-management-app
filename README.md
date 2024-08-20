@@ -4,8 +4,9 @@ programmed in JAVA in Android Studio.
 
 This is the final assigment project for Android Application Development course, in Afeka - the academic college of Engineering in Tel Aviv.
 
+
 **My presentation :**
-[Wander-and-Go.pptx](https://github.com/user-attachments/files/16674527/Wander-and-Go.pptx)
+[Wander-and-Go.pptx](https://github.com/user-attachments/files/16674905/Wander-and-Go.pptx)
 
 Welcome to Wander & Go – your ultimate travel companion app designed to help you organize and plan your all trips and flights with ease. Whether you're an adventurer, a business traveler, or a family vacationer, this app is tailored to ensure your travel experience is smooth, organized, and enjoyable.
 
