@@ -1,9 +1,8 @@
 # Wander & Go 🧭✈️🌏
-Course group #24B-11345A
 programmed in JAVA in Android Studio.
-
 This is the final assigment project for Android Application Development course, in Afeka - the academic college of Engineering in Tel Aviv.
 
+Final Grade: 98
 
 **My presentation :**
 [Wander-and-Go.pptx](https://github.com/user-attachments/files/16674905/Wander-and-Go.pptx)
